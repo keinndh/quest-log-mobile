@@ -42,11 +42,19 @@ function resetProgress() {
 }
 window.resetProgress = resetProgress;
 
-function deleteAccount() {
-    if(confirm('🚨 ULTIMATE WARNING: This will PERMANENTLY DELETE your account and ALL data. There is no recovery. Are you absolutely sure?')) {
+async function deleteAccount() {
+    if(confirm('🚨 ULTIMATE WARNING: This will PERMANENTLY DELETE your account and ALL data from both local and cloud. There is no recovery. Are you absolutely sure?')) {
         const confirmText = prompt('Please type "DELETE" to confirm:');
         if (confirmText === 'DELETE') {
-            showMessage('error', "Feature temporarily disabled for safety. Please contact admin.");
+            showMessage('error', "💀 Commencing deletion...");
+            const res = await window.db.deleteAccount();
+            
+            if (res.status === 'success') {
+                alert(res.message);
+                window.location.href = '../login.html';
+            } else {
+                showMessage('error', res.message);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, deleteUser } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -48,6 +48,32 @@ export const cloudSync = {
             return { status: 'error', message: error.message };
         }
     },
+
+    // Delete entire account and data
+    async deleteAccount() {
+        try {
+            const user = auth.currentUser;
+            if (!user) throw new Error("No user logged in.");
+
+            const userId = user.uid;
+
+            // 1. Delete Firestore Data
+            await deleteDoc(doc(dbCloud, "users", userId));
+
+            // 2. Delete Auth User
+            await deleteUser(user);
+
+            return { status: 'success' };
+        } catch (error) {
+            console.error("Delete Account Error:", error);
+            // If it's a re-auth error, we might need the user to log in again
+            if (error.code === 'auth/requires-recent-login') {
+                return { status: 'error', code: 'reauth_required', message: 'For security, please log out and log back in before deleting your account.' };
+            }
+            return { status: 'error', message: error.message };
+        }
+    },
+
     // Save all local data to the cloud
     async uploadData(userId, localData) {
         try {
