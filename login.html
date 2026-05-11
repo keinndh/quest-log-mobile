@@ -152,5 +152,15 @@
     $("#auth-title").text(isReg ? "HERO REGISTER" : "QUEST LOG");
   }
 </script>
+<script>
+  // PWA Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('[PWA] SW registered!', reg))
+        .catch(err => console.log('[PWA] SW failed!', err));
+    });
+  }
+</script>
 </body>
 </html>
