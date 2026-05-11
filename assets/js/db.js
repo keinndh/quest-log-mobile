@@ -614,6 +614,23 @@ export const db = {
         }
     },
 
+    async deleteAccount() {
+        try {
+            // 1. Delete from Cloud
+            const cloudRes = await cloudSync.deleteAccount();
+            if (cloudRes.status === 'error') return cloudRes;
+
+            // 2. Clear Local Data
+            this.resetProgress();
+            localStorage.removeItem('ql_user_id');
+            localStorage.removeItem('ql_last_user_id');
+
+            return { status: 'success', message: '💀 Account and all data deleted permanently.' };
+        } catch (e) {
+            return { status: 'error', message: 'Deletion failed: ' + e.message };
+        }
+    },
+
     resetProgress() {
         this.save(DB_KEYS.PLAYER, INITIAL_PLAYER);
         this.save(DB_KEYS.QUESTS, INITIAL_QUESTS);

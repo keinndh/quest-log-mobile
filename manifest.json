@@ -1,6 +1,6 @@
 {
-  "name": "Quest Log: Mobile Adventure",
-  "short_name": "QuestLog",
+  "name": "Quest Log",
+  "short_name": "Quest Log",
   "description": "Turn your daily tasks into a pixel-art RPG adventure.",
   "id": "com.questlog.mobile",
   "start_url": "./index.html",
