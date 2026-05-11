@@ -315,6 +315,11 @@
 </script>
 <script type="module" src="assets/js/pixel.js"></script>
 <script type="module" src="assets/js/dashboard.js"></script>
+<script>
+  if (typeof navigator.serviceWorker !== 'undefined') {
+    navigator.serviceWorker.register('sw.js')
+  }
+</script>
 
 </body>
 </html>
