@@ -89,7 +89,7 @@
 <div class="login-card">
   <div class="login-logo">⚔️</div>
   <h1 class="login-title pixel-title" id="auth-title">QUEST LOG</h1>
-  <p class="login-subtitle" id="auth-subtitle">A Hero's Offline Productivity System</p>
+  <p class="login-subtitle" id="auth-subtitle">Personal Task Achievement Application</p>
 
   <div id="auth-message" class="pixel-panel" style="display:none; margin-bottom: 20px; border-color: var(--accent-red); color: var(--accent-red); font-size: 10px; padding: 10px;"></div>
 
@@ -140,11 +140,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="module">
-  import { cloudSync } from './assets/js/firebase.js';
-  window.cloudSync = cloudSync;
-</script>
-<script src="assets/js/login.js"></script>
+<script src="assets/js/login.js" type="module"></script>
 <script>
   function togglePassword(id) {
     const input = document.getElementById(id);

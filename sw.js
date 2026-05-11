@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quest-log-v2'; // Bumped version to force update
+const CACHE_NAME = 'quest-log-v3'; // Bumped version to force update
 const ASSETS = [
   './',
   'index.html',
@@ -31,7 +31,7 @@ self.addEventListener('install', event => {
   self.skipWaiting(); // Force active immediately
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('[SW] Caching system assets (v2)');
+      console.log('[SW] Caching system assets (v3)');
       return cache.addAll(ASSETS);
     })
   );
