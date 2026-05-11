@@ -1,3 +1,5 @@
+import { cloudSync } from './firebase.js';
+
 $(document).ready(function() {
     // LOGIN
     $("#login-form").on("submit", async function(e) {
@@ -11,7 +13,7 @@ $(document).ready(function() {
         $("#auth-message").hide();
 
         try {
-            const res = await window.cloudSync.login(email, password);
+            const res = await cloudSync.login(email, password);
             if (res.status === 'success') {
                 localStorage.setItem('ql_user_id', res.userId);
                 window.location.href = 'index.html';
@@ -43,7 +45,7 @@ $(document).ready(function() {
         $("#auth-message").hide();
 
         try {
-            const res = await window.cloudSync.register(email, password);
+            const res = await cloudSync.register(email, password);
             if (res.status === 'success') {
                 alert("🛡️ Hero Registered! A verification email has been sent to " + email + ". Please verify before signing in.");
                 location.reload(); 
