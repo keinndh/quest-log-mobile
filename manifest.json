@@ -25,70 +25,70 @@
   "screenshots": [
     {
       "src": "assets/img/preview/kingdom.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Hero Dashboard"
     },
     {
       "src": "assets/img/preview/quests.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Quest Board"
     },
     {
       "src": "assets/img/preview/rank.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Character Stats"
     },
     {
       "src": "assets/img/preview/achievement.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Achievement Hall"
     },
     {
       "src": "assets/img/preview/kingdom.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Hero Kingdom"
     },
     {
       "src": "assets/img/preview/login.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Hero Gate"
     },
     {
       "src": "assets/img/preview/reward.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Hero Rewards"
     },
     {
       "src": "assets/img/preview/setting.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Hero Settings"
     },
     {
       "src": "assets/img/preview/shop.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Smith's Shop"
     },
     {
       "src": "assets/img/preview/sidebar.png",
-      "sizes": "412x915",
+      "sizes": "1442x3202",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Sidebar"
