@@ -11,14 +11,14 @@
   "categories": ["productivity", "games", "lifestyle"],
   "icons": [
     {
-      "src": "assets/img/app_icon.png",
-      "sizes": "512x512",
+      "src": "assets/img/app-icon.png",
+      "sizes": "2048x2048",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/img/app_icon.png",
-      "sizes": "512x512",
+      "src": "assets/img/app-icon.png",
+      "sizes": "2048x2048",
       "type": "image/png",
       "purpose": "maskable"
     }
