@@ -8,6 +8,7 @@
   "background_color": "#0d0015",
   "theme_color": "#0d0015",
   "orientation": "portrait",
+  "categories": ["productivity", "games", "lifestyle"],
   "icons": [
     {
       "src": "assets/img/app_icon.png",
