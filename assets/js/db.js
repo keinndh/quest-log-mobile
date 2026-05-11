@@ -150,7 +150,7 @@ export const db = {
             }
         }
 
-        const newPlayer = { ...p, ...data };
+        const newPlayer = { ...p, ...data, class_locked: 1 };
         this.save(DB_KEYS.PLAYER, newPlayer);
         this.triggerSync();
         return { status: 'success', player: newPlayer };
