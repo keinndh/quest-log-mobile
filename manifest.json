@@ -2,23 +2,24 @@
   "name": "Quest Log: Mobile Adventure",
   "short_name": "QuestLog",
   "description": "Turn your daily tasks into a pixel-art RPG adventure.",
+  "id": "com.questlog.mobile",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0d0015",
-  "theme_color": "#ffd700",
+  "theme_color": "#0d0015",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "assets/img/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "assets/img/icon-512.png",
+      "src": "assets/img/app_icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/app_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
