@@ -21,5 +21,63 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/img/preview/Dashboard_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard - Your Hero's Stronghold"
+    },
+    {
+      "src": "assets/img/preview/Quest_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Quest Board - Manage Missions"
+    },
+    {
+      "src": "assets/img/preview/Character_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Character - Track Your Progress"
+    },
+    {
+      "src": "assets/img/preview/Achievement_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Achievement Hall - Prove Your Worth"
+    },
+    {
+      "src": "assets/img/preview/Login_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Login - Enter the Kingdom"
+    },
+    {
+      "src": "assets/img/preview/Rewards_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Rewards - Redeem Your Gold"
+    },
+    {
+      "src": "assets/img/preview/SIdebar_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Navigation - Epic Menus"
+    },
+    {
+      "src": "assets/img/preview/Setting_Preview.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Settings - Customize Your Experience"
+    }
   ]
 }
