@@ -50,6 +50,48 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Achievement Hall"
+    },
+    {
+      "src": "assets/img/preview/kingdom.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Hero Kingdom"
+    },
+    {
+      "src": "assets/img/preview/login.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Hero Gate"
+    },
+    {
+      "src": "assets/img/preview/reward.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Hero Rewards"
+    },
+    {
+      "src": "assets/img/preview/setting.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Hero Settings"
+    },
+    {
+      "src": "assets/img/preview/shop.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Smith's Shop"
+    },
+    {
+      "src": "assets/img/preview/sidebar.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Sidebar"
     }
   ]
 }
