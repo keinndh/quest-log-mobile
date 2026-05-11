@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUEST LOG — LOGIN</title>
+<meta name="description" content="A Hero's Offline Productivity System. Log in to track your epic journey.">
+<meta name="theme-color" content="#0d0015">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/pixel.css">
+<style>
+  body {
+    background: var(--purple-deep);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    overflow: hidden;
+    overflow-x: hidden;
+    animation: pageFadeIn 0.5s ease-out;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(rgba(13, 0, 21, 0.5), rgba(13, 0, 21, 0.7)), url('assets/img/pixel art GIF.gif');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    filter: blur(4px);
+  }
+
+  .login-card {
+    background: var(--panel-bg);
+    border: 3px solid var(--gold-dark);
+    box-shadow: 0 10px 0 #000, 0 0 40px rgba(0,0,0,0.6);
+    width: 100%;
+    max-width: 400px;
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(8px);
+  }
+
+  .password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--gold-dark);
+    user-select: none;
+    transition: color 0.2s;
+  }
+
+  .password-toggle:hover {
+    color: var(--gold);
+  }
+
+  .login-logo { font-size: 60px; margin-bottom: 20px; animation: floatUp 4s ease-in-out infinite; }
+  .login-title { font-size: 24px; color: var(--gold); margin-bottom: 8px; }
+  .login-subtitle { font-family: 'VT323'; font-size: 18px; color: var(--text-dim); margin-bottom: 32px; }
+  .form-group { margin-bottom: 20px; text-align: left; }
+  .form-label { display: block; font-size: 8px; color: var(--gold); margin-bottom: 8px; font-family: 'Press Start 2P', monospace; }
+  .auth-toggle { margin-top: 16px; font-family: 'VT323'; font-size: 16px; color: var(--text-dim); }
+  .auth-toggle a { color: var(--gold); text-decoration: none; cursor: pointer; }
+
+  @media (max-width: 480px) {
+    .login-card {
+      width: 92%;
+      padding: 32px 20px;
+    }
+    .login-logo { font-size: 48px; }
+    .login-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<div class="login-card">
+  <div class="login-logo">⚔️</div>
+  <h1 class="login-title pixel-title" id="auth-title">QUEST LOG</h1>
+  <p class="login-subtitle" id="auth-subtitle">A Hero's Offline Productivity System</p>
+
+  <div id="auth-message" class="pixel-panel" style="display:none; margin-bottom: 20px; border-color: var(--accent-red); color: var(--accent-red); font-size: 10px; padding: 10px;"></div>
+
+  <!-- LOGIN FORM -->
+  <form id="login-form">
+    <div class="form-group">
+      <label class="form-label">EMAIL ADDRESS</label>
+      <input type="email" id="login-email" class="pixel-input" placeholder="hero@kingdom.com" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">PASSWORD</label>
+      <div class="password-wrap">
+        <input type="password" id="login-password" class="pixel-input" placeholder="••••••••" required>
+        <span class="password-toggle" onclick="togglePassword('login-password')">👁️</span>
+      </div>
+    </div>
+    <button type="submit" class="btn-pixel btn-pixel-gold" style="width:100%; padding:15px;">⚔️ SIGN IN</button>
+    <div class="auth-toggle">New hero? <a onclick="toggleAuthView()">REGISTER HERE</a></div>
+  </form>
+
+  <!-- REGISTER FORM -->
+  <form id="register-form" style="display:none;">
+    <div class="form-group">
+      <label class="form-label">EMAIL ADDRESS</label>
+      <input type="email" id="reg-email" class="pixel-input" placeholder="hero@kingdom.com" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">CREATE PASSWORD</label>
+      <div class="password-wrap">
+        <input type="password" id="reg-password" class="pixel-input" placeholder="••••••••" required>
+        <span class="password-toggle" onclick="togglePassword('reg-password')">👁️</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">CONFIRM PASSWORD</label>
+      <div class="password-wrap">
+        <input type="password" id="reg-confirm" class="pixel-input" placeholder="••••••••" required>
+        <span class="password-toggle" onclick="togglePassword('reg-confirm')">👁️</span>
+      </div>
+    </div>
+    <button type="submit" class="btn-pixel btn-pixel-purple" style="width:100%; padding:15px;">🛡️ CREATE ACCOUNT</button>
+    <div class="auth-toggle">Already a hero? <a onclick="toggleAuthView()">SIGN IN HERE</a></div>
+  </form>
+
+  <div style="margin-top:24px; font-family:'VT323'; font-size:12px; color:var(--text-dim);">
+    Cloud Sync enabled. Your progress is safe offline.
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="module">
+  import { cloudSync } from './assets/js/firebase.js';
+  window.cloudSync = cloudSync;
+</script>
+<script src="assets/js/login.js"></script>
+<script>
+  function togglePassword(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+  function toggleAuthView() {
+    $("#login-form, #register-form").toggle();
+    const isReg = $("#register-form").is(":visible");
+    $("#auth-title").text(isReg ? "HERO REGISTER" : "QUEST LOG");
+  }
+</script>
+</body>
+</html>

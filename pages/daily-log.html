@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUEST LOG — DAILY LOG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/pixel.css">
+<link rel="manifest" href="../manifest.json">
+<style>
+
+  .heatmap-grid { display:flex; gap:6px; flex-wrap:wrap; }
+  .heat-cell {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--gold-dark);
+    font-family:'VT323';
+    transition: all 0.1s steps(1);
+    cursor: default;
+  }
+  .heat-0 { background: rgba(13,0,21,0.8); }
+  .heat-1 { background: rgba(155,0,255,0.25); border-color: var(--purple-bright); }
+  .heat-2 { background: rgba(155,0,255,0.45); border-color: var(--purple-glow); }
+  .heat-3 { background: rgba(255,215,0,0.3); border-color: var(--gold-dark); }
+  .heat-high { background: rgba(255,215,0,0.6); border-color: var(--gold); box-shadow: var(--shadow-gold); }
+  .heat-cell:hover { transform: scale(1.1); z-index:2; }
+  .heat-num { font-size:18px; color:var(--gold); }
+  .heat-day { font-size:10px; color:var(--text-dim); }
+  .today-cell { border-color: var(--accent-green) !important; }
+  .daily-quest-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    background: var(--card-bg);
+    border: 2px solid var(--accent-green);
+    margin-bottom:6px;
+  }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<nav class="nav-pixel">
+  <div style="display:flex; align-items:center; gap:15px;">
+    <button id="menu-toggle" class="btn-pixel" style="padding:8px 12px; font-size:20px; background:transparent; border-color:rgba(255,215,0,0.3);">☰</button>
+    <a href="../index.html" class="nav-logo">
+      <span style="font-size:24px;">⚔️</span>
+      <span>QUEST<br><span style="color:var(--purple-glow);font-size:10px;">LOG</span></span>
+    </a>
+  </div>
+
+  <div class="nav-player-wrap">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="nav-level-badge" id="nav-level">LV--</span>
+        <span style="font-size:8px;color:var(--gold);" id="nav-name">---</span>
+      </div>
+      <div class="nav-xp-mini" style="margin-top:4px;" id="nav-xp-text">0/0 XP</div>
+      <div class="xp-bar-wrap" style="height:6px;margin-top:3px;width:120px;">
+        <div class="xp-bar-fill" id="nav-xp-fill" style="width:0%;"></div>
+      </div>
+    </div>
+    <div style="font-family:'VT323';font-size:18px;color:var(--gold);" id="nav-gold">💰 0G</div>
+  </div>
+</nav>
+
+<div class="page-container" style="padding-top: 80px;">
+  <div class="page-header">
+    <h1 class="pixel-title">📅 DAILY LOG</h1>
+    <p class="pixel-subtitle" id="current-date-subtitle">Today's adventure</p>
+  </div>
+
+  <!-- Today Summary -->
+  <div class="pixel-panel section-gap" style="background:radial-gradient(ellipse at top,rgba(0,255,136,0.08),var(--panel-bg));">
+    <h2 class="pixel-title" style="font-size:14px;margin-bottom:20px;">☀️ TODAY'S SUMMARY</h2>
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div style="text-align:center;border:3px solid var(--accent-green);padding:16px;">
+        <div style="font-size:28px;color:var(--accent-green);font-family:'VT323';" id="today-done-count">0</div>
+        <div style="font-size:7px;color:var(--text-dim);">QUESTS DONE</div>
+      </div>
+      <div style="text-align:center;border:3px solid var(--gold);padding:16px;">
+        <div style="font-size:28px;color:var(--gold);font-family:'VT323';" id="today-xp-gain">+0</div>
+        <div style="font-size:7px;color:var(--text-dim);">XP EARNED</div>
+      </div>
+      <div style="text-align:center;border:3px solid var(--gold);padding:16px;">
+        <div style="font-size:28px;color:var(--gold);font-family:'VT323';" id="today-gold-gain">+0</div>
+        <div style="font-size:7px;color:var(--text-dim);">GOLD EARNED</div>
+      </div>
+      <div style="text-align:center;border:3px solid var(--purple-glow);padding:16px;">
+        <div style="font-size:28px;color:var(--purple-glow);font-family:'VT323';" id="today-pending-count">0</div>
+        <div style="font-size:7px;color:var(--text-dim);">STILL PENDING</div>
+      </div>
+    </div>
+    <!-- XP -->
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:8px;color:var(--text-dim);">TODAY'S XP PROGRESS</span>
+        <span style="font-size:8px;color:var(--gold);" id="today-xp-text">0/0 (0%)</span>
+      </div>
+      <div class="xp-bar-wrap" style="height:20px;">
+        <div class="xp-bar-fill" id="today-xp-fill" style="width:0%;"></div>
+        <div class="xp-bar-text" id="today-level-next">LV 1 → LV 2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2 section-gap">
+    <!-- Completed Today -->
+    <div class="pixel-panel">
+      <h3 class="pixel-title" style="font-size:11px;margin-bottom:16px;">✅ COMPLETED TODAY</h3>
+      <div id="today-quests-container">
+        <!-- injected by js -->
+      </div>
+    </div>
+
+    <!-- Pending Priority Quests -->
+    <div class="pixel-panel">
+      <h3 class="pixel-title" style="font-size:11px;margin-bottom:16px;">⚠️ PRIORITY QUEUE</h3>
+      <div id="priority-queue-container">
+        <!-- injected by js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 14-Day Heatmap -->
+  <div class="pixel-panel section-gap">
+    <h3 class="pixel-title" style="font-size:11px;margin-bottom:20px;">🔥 14-DAY ACTIVITY HEATMAP</h3>
+    <div class="heatmap-grid" id="heatmap-container">
+      <!-- injected by js -->
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px;font-family:'VT323';font-size:14px;color:var(--text-dim);">
+      <span>Intensity: </span>
+      <span class="heat-cell heat-0" style="width:20px;height:20px;font-size:0;">0</span>
+      <span class="heat-cell heat-1" style="width:20px;height:20px;font-size:0;">1</span>
+      <span class="heat-cell heat-2" style="width:20px;height:20px;font-size:0;">2-3</span>
+      <span class="heat-cell heat-3" style="width:20px;height:20px;font-size:0;">4</span>
+      <span class="heat-cell heat-high" style="width:20px;height:20px;font-size:0;">5+</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="module">
+  import { db } from '../assets/js/db.js';
+  window.db = db;
+</script>
+<script type="module" src="../assets/js/pixel.js"></script>
+<script type="module" src="../assets/js/daily-log.js"></script>
+</body>
+</html>
