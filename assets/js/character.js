@@ -34,10 +34,10 @@ $(document).ready(function() {
         });
 
         if(res.status === 'success') {
-            showMessage('success', "✓ CHARACTER UPDATED!");
+            showMessage('success', "✓ CHARACTER UPDATED!", "#character-message");
             loadCharacterData();
         } else {
-            showMessage('error', res.message || "Failed to update profile.");
+            showMessage('error', res.message || "Failed to update profile.", "#character-message");
         }
     });
 });
@@ -158,12 +158,16 @@ function loadCharacterData() {
     }
 }
 
-function showMessage(type, text) {
+function showMessage(type, text, container = "#system-message") {
     let color = type === 'success' ? 'var(--accent-green)' : (type === 'warning' ? 'var(--accent-orange)' : 'var(--accent-red)');
-    $("#system-message").css('border-color', color).show();
-    $("#system-message-text").css('color', color).text(text);
+    const $msg = $(container);
+    const $text = $(container + "-text");
+    
+    $msg.css('border-color', color).stop(true, true).fadeIn();
+    $text.css('color', color).text(text);
+    
     setTimeout(() => {
-        $("#system-message").fadeOut();
+        $msg.fadeOut();
     }, 4000);
 }
 
