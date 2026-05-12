@@ -3,7 +3,8 @@
   "short_name": "Quest Log",
   "description": "Turn your daily tasks into a pixel-art RPG adventure.",
   "id": "com.questlog.mobile",
-  "start_url": "./index.html",
+  "start_url": "https://keinndh.github.io/quest-log-mobile/index.html",
+  "scope": "https://keinndh.github.io/quest-log-mobile/",
   "display": "standalone",
   "background_color": "#0d0015",
   "theme_color": "#0d0015",
@@ -12,15 +13,21 @@
   "icons": [
     {
       "src": "assets/img/app-icon.png",
-      "sizes": "2048x2048",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "assets/img/app-icon.png",
-      "sizes": "2048x2048",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "assets/img/app-icon.png",
+      "sizes": "2048x2048",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -51,13 +58,6 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Achievement Hall"
-    },
-    {
-      "src": "assets/img/preview/kingdom.png",
-      "sizes": "1442x3202",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Hero Kingdom"
     },
     {
       "src": "assets/img/preview/login.png",
