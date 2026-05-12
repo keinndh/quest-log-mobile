@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QUEST LOG â€” LOGIN</title>
-<meta name="description" content="A Hero's Offline Productivity System. Log in to track your epic journey.">
-<meta name="theme-color" content="#0d0015">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/pixel.css">
+<?php 
+  $title = "QUEST LOG — LOGIN";
+  include '../includes/header.php';
+?>
 <style>
   body {
     background: var(--purple-deep);
@@ -162,3 +155,4 @@
 </script>
 </body>
 </html>
+

@@ -93,6 +93,13 @@ function initDB($db) {
         created_at TEXT DEFAULT (datetime('now'))
     )");
 
+    $db->exec("CREATE TABLE IF NOT EXISTS login_attempts (
+        ip TEXT,
+        attempts INTEGER DEFAULT 1,
+        last_attempt INTEGER,
+        PRIMARY KEY (ip)
+    )");
+
     // Migration: Add missing columns if they don't exist
     $cols = [];
     $res = $db->query("PRAGMA table_info(player)");

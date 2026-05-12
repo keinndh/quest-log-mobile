@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QUEST LOG — RANKS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/pixel.css">
-<link rel="manifest" href="../manifest.json">
+<?php 
+  $title = "QUEST LOG � LEADERBOARD";
+  include '../includes/header.php';
+?>
 <style>
 
   .rank-card {
@@ -38,7 +32,7 @@
 <nav class="nav-pixel">
   <div class="nav-logo-wrap">
     <button id="menu-toggle" class="btn-pixel" style="padding:8px 12px; font-size:20px; background:transparent; border-color:rgba(255,215,0,0.3);">☰</button>
-    <a href="../index.html" class="nav-logo">
+    <a href="?page=dashboard" class="nav-logo">
       <span style="font-size:24px;">⚔️</span>
       <span>QUEST<br><span style="color:var(--purple-glow);font-size:10px;">LOG</span></span>
     </a>
@@ -103,16 +97,17 @@
       <div style="font-size:10px;color:var(--gold);">TOTAL HERO SCORE</div>
       <div style="font-size:28px;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.5);" id="total-score">0</div>
     </div>
-    <a href="stats.html" class="btn-pixel btn-pixel-outline" style="margin-top:20px; display:inline-block;">📊 VIEW FULL STATS →</a>
+    <a href="?page=stats" class="btn-pixel btn-pixel-outline" style="margin-top:20px; display:inline-block;">📊 VIEW FULL STATS →</a>
   </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="module">
-  import { db } from '../assets/js/db.js';
+  import { db } from 'assets/js/db.js';
   window.db = db;
 </script>
-<script type="module" src="../assets/js/pixel.js"></script>
-<script type="module" src="../assets/js/leaderboard.js"></script>
+<script type="module" src="assets/js/pixel.js"></script>
+<script type="module" src="assets/js/leaderboard.js"></script>
 </body>
 </html>
+

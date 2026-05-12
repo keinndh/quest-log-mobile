@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QUEST LOG — DASHBOARD</title>
-<meta name="description" content="Turn your daily tasks into a pixel-art RPG adventure. Track quests, earn gold, and level up your life.">
-<meta name="theme-color" content="#0d0015">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/pixel.css">
-<link rel="manifest" href="manifest.json">
+<?php 
+  $title = "QUEST LOG — DASHBOARD";
+  include '../includes/header.php';
+?>
 <style>
 
   .hero-banner {
@@ -95,7 +87,7 @@
 <nav class="nav-pixel">
   <div class="nav-logo-wrap">
     <button id="menu-toggle" class="btn-pixel" style="padding:8px 12px; font-size:20px; background:transparent; border-color:rgba(255,215,0,0.3);">☰</button>
-    <a href="index.html" class="nav-logo">
+    <a href="?page=dashboard" class="nav-logo">
         <span style="font-size:24px;">⚔️</span>
         <span>QUEST<br><span style="color:var(--purple-glow);font-size:10px;">LOG</span></span>
     </a>
@@ -146,8 +138,8 @@
   
         </div>
         <div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;">
-          <a href="pages/quests.html" class="btn-pixel btn-pixel-gold btn-lg"><span>⚔️</span> START QUESTING</a>
-          <a href="pages/character.html" class="btn-pixel btn-pixel-outline"><span>👤</span> VIEW CHARACTER</a>
+          <a href="?page=quests" class="btn-pixel btn-pixel-gold btn-lg"><span>⚔️</span> START QUESTING</a>
+          <a href="?page=character" class="btn-pixel btn-pixel-outline"><span>👤</span> VIEW CHARACTER</a>
         </div>
       </div>
       <div style="text-align:center; min-width: 100px;">
@@ -183,28 +175,28 @@
     <div>
       <div class="pixel-panel" style="margin-bottom:24px;">
         <h3 class="pixel-title" style="font-size:11px;margin-bottom:16px;">⚡ QUICK ACTIONS</h3>
-        <a href="pages/quests.html?action=new" class="quick-action">
+        <a href="?page=quests?action=new" class="quick-action">
           <span class="quick-action-icon">➕</span>
           <div>
             <div class="quick-action-text">ADD NEW QUEST</div>
             <div class="quick-action-sub">Create a new mission</div>
           </div>
         </a>
-        <a href="pages/quests.html" class="quick-action">
+        <a href="?page=quests" class="quick-action">
           <span class="quick-action-icon">📜</span>
           <div>
             <div class="quick-action-text">VIEW ALL QUESTS</div>
             <div class="quick-action-sub"><span id="action-quests-active">0</span> quests pending</div>
           </div>
         </a>
-        <a href="pages/achievements.html" class="quick-action">
+        <a href="?page=achievements" class="quick-action">
           <span class="quick-action-icon">🏆</span>
           <div>
             <div class="quick-action-text">ACHIEVEMENTS</div>
             <div class="quick-action-sub"><span id="action-ach-locked">0</span> still locked</div>
           </div>
         </a>
-        <a href="pages/stats.html" class="quick-action">
+        <a href="?page=stats" class="quick-action">
           <span class="quick-action-icon">📊</span>
           <div>
             <div class="quick-action-text">VIEW STATS</div>
@@ -226,7 +218,7 @@
       <div class="pixel-panel section-gap">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h3 class="pixel-title" style="font-size:11px;">📜 RECENT QUESTS</h3>
-          <a href="pages/quests.html" class="btn-pixel btn-pixel-outline btn-sm">VIEW ALL →</a>
+          <a href="?page=quests" class="btn-pixel btn-pixel-outline btn-sm">VIEW ALL →</a>
         </div>
         <div id="recent-quests-container">
             <div style="text-align:center;padding:32px;">
@@ -240,7 +232,7 @@
       <div class="pixel-panel">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h3 class="pixel-title" style="font-size:11px;">🏆 LATEST BADGES</h3>
-          <a href="pages/achievements.html" class="btn-pixel btn-pixel-outline btn-sm">VIEW ALL →</a>
+          <a href="?page=achievements" class="btn-pixel btn-pixel-outline btn-sm">VIEW ALL →</a>
         </div>
         <div id="recent-achievements-container">
             <div style="text-align:center;padding:24px;color:var(--text-dim);font-family:'VT323';font-size:18px;">

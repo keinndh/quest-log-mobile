@@ -1,10 +1,8 @@
-import { cloudSync } from './firebase.js';
-
 $(document).ready(function() {
     // LOGIN
-    $("#login-form").on("submit", async function(e) {
+    $("#login-form").on("submit", function(e) {
         e.preventDefault();
-        const email = $("#login-email").val();
+        const username = $("#login-email").val(); // Field id is login-email but we use it as username
         const password = $("#login-password").val();
         const btn = $(this).find("button");
         const originalText = btn.text();
@@ -12,25 +10,27 @@ $(document).ready(function() {
         btn.text("AUTHENTICATING...").prop("disabled", true);
         $("#auth-message").hide();
 
-        try {
-            const res = await cloudSync.login(email, password);
+        $.post('app/controller.php', {
+            action: 'login',
+            username: username,
+            password: password
+        }, function(res) {
             if (res.status === 'success') {
-                localStorage.setItem('ql_user_id', res.userId);
-                window.location.href = 'index.html';
+                window.location.href = '?page=dashboard';
             } else {
                 showError(res.message);
                 btn.text(originalText).prop("disabled", false);
             }
-        } catch (err) {
-            showError(err.message || "Connection failed. Check your internet.");
+        }, 'json').fail(function() {
+            showError("Connection failed. Server might be offline.");
             btn.text(originalText).prop("disabled", false);
-        }
+        });
     });
 
     // REGISTER
-    $("#register-form").on("submit", async function(e) {
+    $("#register-form").on("submit", function(e) {
         e.preventDefault();
-        const email = $("#reg-email").val();
+        const username = $("#reg-email").val();
         const password = $("#reg-password").val();
         const confirm = $("#reg-confirm").val();
         const btn = $(this).find("button");
@@ -41,43 +41,38 @@ $(document).ready(function() {
             return;
         }
 
+        if (password.length < 8) {
+            showError("Password must be at least 8 characters!");
+            return;
+        }
+
         btn.text("CREATING HERO...").prop("disabled", true);
         $("#auth-message").hide();
 
-        try {
-            const res = await cloudSync.register(email, password);
+        $.post('app/controller.php', {
+            action: 'register',
+            username: username,
+            password: password
+        }, function(res) {
             if (res.status === 'success') {
-                alert("🛡️ Hero Registered! A verification email has been sent to " + email + ". Please verify before signing in.");
+                alert("🛡️ Hero Registered! You may now sign in.");
                 location.reload(); 
             } else {
                 showError(res.message);
                 btn.text(originalText).prop("disabled", false);
             }
-        } catch (err) {
-            showError(err.message || "Registration failed. Check your internet.");
+        }, 'json').fail(function() {
+            showError("Registration failed. Server error.");
             btn.text(originalText).prop("disabled", false);
-        }
+        });
     });
 
     function showError(msg) {
         $("#auth-message").text("⚠️ " + msg).fadeIn();
     }
 
-    async function forgotPassword() {
-        const email = $("#login-email").val();
-        if (!email) {
-            showError("Enter your email address first, Hero!");
-            return;
-        }
-
-        if (confirm(`⚔️ Send a recovery scroll to ${email}?`)) {
-            const res = await cloudSync.resetPassword(email);
-            if (res.status === 'success') {
-                alert("📜 " + res.message);
-            } else {
-                showError(res.message);
-            }
-        }
+    function forgotPassword() {
+        alert("📜 Recovery scrolls are currently disabled in this Kingdom. Please contact the High Mage (Admin).");
     }
     window.forgotPassword = forgotPassword;
 });

@@ -5,11 +5,40 @@ require_once '../includes/db.php';
 
 $db = getDB();
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+        http_response_code(403);
+        die(json_encode(['status' => 'error', 'message' => 'CSRF token mismatch. Security breach detected!']));
+    }
+}
+
 if(isset($_POST['action'])) {
     $action = $_POST['action'];
 
     switch($action) {
         case 'login':
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $now = time();
+            
+            // Rate limit check: 10 attempts per 15 minutes
+            $stmt = $db->prepare("SELECT attempts, last_attempt FROM login_attempts WHERE ip = ?");
+            $stmt->bindValue(1, $ip);
+            $res = $stmt->execute();
+            $attemptRow = $res->fetchArray(SQLITE3_ASSOC);
+            
+            if ($attemptRow) {
+                if ($now - $attemptRow['last_attempt'] < 900) { // 15 mins
+                    if ($attemptRow['attempts'] >= 10) {
+                        echo json_encode(['status' => 'error', 'message' => 'Too many failed attempts. Try again in 15 minutes.']);
+                        break;
+                    }
+                } else {
+                    // Reset if last attempt was > 15 mins ago
+                    $db->exec("DELETE FROM login_attempts WHERE ip = '$ip'");
+                }
+            }
+
             $user = trim($_POST['username'] ?? '');
             $pass = $_POST['password'] ?? '';
             
@@ -19,10 +48,21 @@ if(isset($_POST['action'])) {
             $row = $res->fetchArray(SQLITE3_ASSOC);
             
             if($row && password_verify($pass, $row['password'])) {
+                // Success - clear attempts
+                $stmt = $db->prepare("DELETE FROM login_attempts WHERE ip = ?");
+                $stmt->bindValue(1, $ip);
+                $stmt->execute();
+                
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['username'] = $row['username'];
                 echo json_encode(['status' => 'success']);
             } else {
+                // Failed - increment attempts
+                $stmt = $db->prepare("INSERT INTO login_attempts (ip, attempts, last_attempt) VALUES (?, 1, ?) ON CONFLICT(ip) DO UPDATE SET attempts = attempts + 1, last_attempt = excluded.last_attempt");
+                $stmt->bindValue(1, $ip);
+                $stmt->bindValue(2, $now);
+                $stmt->execute();
+                
                 echo json_encode(['status' => 'error', 'message' => 'Invalid username or password']);
             }
             break;
@@ -93,28 +133,34 @@ if(isset($_POST['action'])) {
             $player = getPlayer($db, $userId);
             $gold = getGold($db, $userId);
             
-            $totalCompleted = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$userId");
-            $totalPending = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=0 AND user_id=$userId");
-            $todayCompleted = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND date(completed_at)=date('now') AND user_id=$userId");
+            $totalCompleted = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=" . (int)$userId);
+            $totalPending = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=0 AND user_id=" . (int)$userId);
+            $todayCompleted = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND date(completed_at)=date('now') AND user_id=" . (int)$userId);
             
             $achTotal = $db->querySingle("SELECT COUNT(*) FROM achievements");
-            $achUnlocked = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=$userId");
+            $achUnlocked = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=" . (int)$userId);
             
             $recentQuests = [];
-            $rq = $db->query("SELECT * FROM quests WHERE user_id=$userId ORDER BY created_at DESC LIMIT 5");
-            while ($q = $rq->fetchArray(SQLITE3_ASSOC)) {
+            $rqStmt = $db->prepare("SELECT * FROM quests WHERE user_id=? ORDER BY created_at DESC LIMIT 5");
+            $rqStmt->bindValue(1, $userId);
+            $rqRes = $rqStmt->execute();
+            while ($q = $rqRes->fetchArray(SQLITE3_ASSOC)) {
                 $recentQuests[] = $q;
             }
  
             $recentAch = [];
-            $ra = $db->query("SELECT a.*, au.unlocked_at FROM achievements a JOIN achievements_unlocked au ON a.id = au.achievement_id WHERE au.user_id=$userId ORDER BY au.unlocked_at DESC LIMIT 3");
-            while ($a = $ra->fetchArray(SQLITE3_ASSOC)) {
+            $raStmt = $db->prepare("SELECT a.*, au.unlocked_at FROM achievements a JOIN achievements_unlocked au ON a.id = au.achievement_id WHERE au.user_id=? ORDER BY au.unlocked_at DESC LIMIT 3");
+            $raStmt->bindValue(1, $userId);
+            $raRes = $raStmt->execute();
+            while ($a = $raRes->fetchArray(SQLITE3_ASSOC)) {
                 $a['unlocked'] = 1;
                 $recentAch[] = $a;
             }
  
             $catData = [];
-            $catRes = $db->query("SELECT category, COUNT(*) as cnt FROM quests WHERE completed=1 AND user_id=$userId GROUP BY category ORDER BY cnt DESC");
+            $catStmt = $db->prepare("SELECT category, COUNT(*) as cnt FROM quests WHERE completed=1 AND user_id=? GROUP BY category ORDER BY cnt DESC");
+            $catStmt->bindValue(1, $userId);
+            $catRes = $catStmt->execute();
             while ($row = $catRes->fetchArray(SQLITE3_ASSOC)) {
                 $catData[] = $row;
             }
@@ -147,13 +193,21 @@ if(isset($_POST['action'])) {
             $sort = $_POST['sort'] ?? 'newest';
             $search = trim($_POST['search'] ?? '');
  
-            $where = ["user_id=$userId"];
-            if ($filter === 'active') $where[] = 'completed=0';
-            if ($filter === 'completed') $where[] = 'completed=1';
-            if ($category !== 'all') $where[] = "category='" . SQLite3::escapeString($category) . "'";
-            if ($search) $where[] = "(title LIKE '%" . SQLite3::escapeString($search) . "%' OR description LIKE '%" . SQLite3::escapeString($search) . "%')";
+            $query = "SELECT * FROM quests WHERE user_id = ?";
+            $params = [$userId];
             
-            $whereStr = 'WHERE ' . implode(' AND ', $where);
+            if ($filter === 'active') $query .= ' AND completed=0';
+            if ($filter === 'completed') $query .= ' AND completed=1';
+            
+            if ($category !== 'all') {
+                $query .= " AND category = ?";
+                $params[] = $category;
+            }
+            if ($search) {
+                $query .= " AND (title LIKE ? OR description LIKE ?)";
+                $params[] = "%$search%";
+                $params[] = "%$search%";
+            }
             
             $orderBy = match($sort) {
                 'xp' => 'xp_reward DESC', 
@@ -161,9 +215,14 @@ if(isset($_POST['action'])) {
                 'oldest' => 'created_at ASC', 
                 default => 'created_at DESC'
             };
- 
+            $query .= " ORDER BY $orderBy";
+  
             $quests = [];
-            $qRes = $db->query("SELECT * FROM quests $whereStr ORDER BY $orderBy");
+            $stmt = $db->prepare($query);
+            foreach ($params as $idx => $val) {
+                $stmt->bindValue($idx + 1, $val);
+            }
+            $qRes = $stmt->execute();
             while($q = $qRes->fetchArray(SQLITE3_ASSOC)) {
                 $quests[] = $q;
             }
@@ -216,7 +275,11 @@ if(isset($_POST['action'])) {
             $userId = $_SESSION['user_id'] ?? 1;
             $id = $_POST['id'] ?? 0;
             if($id) {
-                $q = $db->querySingle("SELECT * FROM quests WHERE id=$id AND user_id=$userId", true);
+                $stmt = $db->prepare("SELECT * FROM quests WHERE id=? AND user_id=?");
+                $stmt->bindValue(1, $id);
+                $stmt->bindValue(2, $userId);
+                $res = $stmt->execute();
+                $q = $res->fetchArray(SQLITE3_ASSOC);
                 if($q) {
                     echo json_encode(['status' => 'success', 'data' => $q]);
                 } else {
@@ -285,7 +348,12 @@ if(isset($_POST['action'])) {
             $id = $_POST['id'] ?? 0;
             if($id) {
                 $player = getPlayer($db, $userId);
-                $q = $db->querySingle("SELECT title, xp_reward, gold_reward FROM quests WHERE id=$id AND user_id=$userId", true);
+                $stmt = $db->prepare("SELECT title, xp_reward, gold_reward FROM quests WHERE id=? AND user_id=?");
+                $stmt->bindValue(1, $id);
+                $stmt->bindValue(2, $userId);
+                $res = $stmt->execute();
+                $q = $res->fetchArray(SQLITE3_ASSOC);
+
                 if($q) {
                     $bonusGold = 0;
                     $weaponRarity = $player['weapon_rarity'] ?? 'none';
@@ -300,8 +368,15 @@ if(isset($_POST['action'])) {
                     };
                     $totalGold = $q['gold_reward'] + $bonusGold;
                     
-                    $db->exec("UPDATE quests SET completed=1, completed_at=datetime('now') WHERE id=$id AND user_id=$userId");
-                    $db->exec("UPDATE player_gold SET total = total + $totalGold WHERE id=$userId");
+                    $u1 = $db->prepare("UPDATE quests SET completed=1, completed_at=datetime('now') WHERE id=? AND user_id=?");
+                    $u1->bindValue(1, $id);
+                    $u1->bindValue(2, $userId);
+                    $u1->execute();
+
+                    $u2 = $db->prepare("UPDATE player_gold SET total = total + ? WHERE id=?");
+                    $u2->bindValue(1, $totalGold);
+                    $u2->bindValue(2, $userId);
+                    $u2->execute();
                     
                     // Log the gain
                     $stmtLog = $db->prepare("INSERT INTO gold_log (user_id, amount, source) VALUES (?, ?, ?)");
@@ -323,12 +398,17 @@ if(isset($_POST['action'])) {
         case 'getCharacterData':
             $userId = $_SESSION['user_id'] ?? 1;
             $player = getPlayer($db, $userId);
-            $user = $db->querySingle("SELECT username FROM users WHERE id=$userId", true);
+            
+            $stmt = $db->prepare("SELECT username FROM users WHERE id=?");
+            $stmt->bindValue(1, $userId);
+            $res = $stmt->execute();
+            $user = $res->fetchArray(SQLITE3_ASSOC);
+            
             $player['username'] = $user['username'] ?? '';
             $player['is_admin'] = ($player['username'] === 'admin');
             
             $gold = getGold($db, $userId);
-            $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$userId");
+            $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=" . (int)$userId);
             
             $str = min(99, 10 + $player['level'] * 3 + $totalDone);
             $intel = min(99, 10 + $player['level'] * 2);
@@ -336,8 +416,10 @@ if(isset($_POST['action'])) {
             $mp = min(999, 50 + $player['level'] * 5);
             
             $recentAch = [];
-            $achList = $db->query("SELECT a.*, au.unlocked_at FROM achievements a JOIN achievements_unlocked au ON a.id = au.achievement_id WHERE au.user_id=$userId ORDER BY au.unlocked_at DESC LIMIT 6");
-            while ($a = $achList->fetchArray(SQLITE3_ASSOC)) {
+            $achStmt = $db->prepare("SELECT a.*, au.unlocked_at FROM achievements a JOIN achievements_unlocked au ON a.id = au.achievement_id WHERE au.user_id=? ORDER BY au.unlocked_at DESC LIMIT 6");
+            $achStmt->bindValue(1, $userId);
+            $achRes = $achStmt->execute();
+            while ($a = $achRes->fetchArray(SQLITE3_ASSOC)) {
                 $a['unlocked'] = 1;
                 $recentAch[] = $a;
             }
@@ -359,15 +441,18 @@ if(isset($_POST['action'])) {
             $avatar = $_POST['avatar'] ?? '⚔️';
             
             // Get current state
-            $current = $db->querySingle("SELECT class, class_locked FROM player WHERE id = $userId", true);
+            $cStmt = $db->prepare("SELECT class, class_locked FROM player WHERE id = ?");
+            $cStmt->bindValue(1, $userId);
+            $current = $cStmt->execute()->fetchArray(SQLITE3_ASSOC);
             
-            // If class is being changed and it's locked
-            $user = $db->querySingle("SELECT username FROM users WHERE id=$userId", true);
+            $uStmt = $db->prepare("SELECT username FROM users WHERE id=?");
+            $uStmt->bindValue(1, $userId);
+            $user = $uStmt->execute()->fetchArray(SQLITE3_ASSOC);
             $isAdmin = ($user['username'] === 'admin');
 
             if (!$isAdmin && $class !== $current['class'] && $current['class_locked'] == 1) {
                 $totalAch = $db->querySingle("SELECT COUNT(*) FROM achievements");
-                $unlockedAch = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id = $userId");
+                $unlockedAch = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id = " . (int)$userId);
                 
                 if ($unlockedAch < $totalAch) {
                     echo json_encode(['status' => 'error', 'message' => 'CLASS LOCKED! Earn all achievements to change class again.']);
@@ -376,8 +461,10 @@ if(isset($_POST['action'])) {
             }
 
             // Check if username already exists for another user
-            $existing = $db->querySingle("SELECT id FROM users WHERE username = '" . SQLite3::escapeString($name) . "' AND id != $userId");
-            if ($existing) {
+            $exStmt = $db->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
+            $exStmt->bindValue(1, $name);
+            $exStmt->bindValue(2, $userId);
+            if ($exStmt->execute()->fetchArray()) {
                 echo json_encode(['status' => 'error', 'message' => 'Username already taken']);
                 break;
             }
@@ -448,14 +535,14 @@ if(isset($_POST['action'])) {
                 break;
             }
 
-            // Delete all user data
-            $db->exec("DELETE FROM users WHERE id = $userId");
-            $db->exec("DELETE FROM player WHERE id = $userId");
-            $db->exec("DELETE FROM player_gold WHERE id = $userId");
-            $db->exec("DELETE FROM quests WHERE user_id = $userId");
-            $db->exec("DELETE FROM daily_log WHERE user_id = $userId");
-            $db->exec("DELETE FROM gold_log WHERE user_id = $userId");
-            $db->exec("DELETE FROM achievements_unlocked WHERE user_id = $userId");
+            // Delete all user data using prepared statements for safety
+            $tables = ['users', 'player', 'player_gold', 'quests', 'daily_log', 'gold_log', 'achievements_unlocked'];
+            foreach ($tables as $table) {
+                $column = ($table === 'quests' || $table === 'daily_log' || $table === 'gold_log' || $table === 'achievements_unlocked') ? 'user_id' : 'id';
+                $stmt = $db->prepare("DELETE FROM $table WHERE $column = ?");
+                $stmt->bindValue(1, $userId);
+                $stmt->execute();
+            }
 
             session_destroy();
             echo json_encode(['status' => 'success', 'message' => 'Account deleted. Farewell, Hero.']);
@@ -464,10 +551,16 @@ if(isset($_POST['action'])) {
         case 'togglePause':
             $userId = $_SESSION['user_id'] ?? 1;
             $id = $_POST['id'];
-            $res = $db->querySingle("SELECT is_paused FROM quests WHERE id=$id AND user_id=$userId", true);
+            $stmt = $db->prepare("SELECT is_paused FROM quests WHERE id=? AND user_id=?");
+            $stmt->bindValue(1, $id);
+            $stmt->bindValue(2, $userId);
+            $res = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
             if ($res) {
                 $newVal = $res['is_paused'] ? 0 : 1;
-                $db->exec("UPDATE quests SET is_paused = $newVal WHERE id=$id");
+                $uStmt = $db->prepare("UPDATE quests SET is_paused = ? WHERE id=?");
+                $uStmt->bindValue(1, $newVal);
+                $uStmt->bindValue(2, $id);
+                $uStmt->execute();
                 echo json_encode(['status' => 'success', 'is_paused' => $newVal]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Quest not found']);
@@ -496,7 +589,7 @@ if(isset($_POST['action'])) {
             $userId = $_SESSION['user_id'] ?? 1;
             $filter = $_POST['filter'] ?? 'all';
             
-            $sql = "SELECT a.*, CASE WHEN au.user_id IS NOT NULL THEN 1 ELSE 0 END as unlocked, au.unlocked_at FROM achievements a LEFT JOIN achievements_unlocked au ON a.id = au.achievement_id AND au.user_id = $userId";
+            $sql = "SELECT a.*, CASE WHEN au.user_id IS NOT NULL THEN 1 ELSE 0 END as unlocked, au.unlocked_at FROM achievements a LEFT JOIN achievements_unlocked au ON a.id = au.achievement_id AND au.user_id = ?";
             
             if ($filter === 'unlocked') {
                 $sql .= " WHERE au.user_id IS NOT NULL";
@@ -506,7 +599,9 @@ if(isset($_POST['action'])) {
             
             $sql .= " ORDER BY unlocked DESC, rarity DESC, a.id ASC";
             
-            $achs = $db->query($sql);
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(1, $userId);
+            $achs = $stmt->execute();
             $achArr = [];
             while ($a = $achs->fetchArray(SQLITE3_ASSOC)) {
                 $achArr[] = $a;
@@ -550,11 +645,9 @@ if(isset($_POST['action'])) {
                 'rare'     => ['cost'=>1500, 'prev'=>'uncommon'],
                 'epic'     => ['cost'=>5000, 'prev'=>'rare'],
                 'legendary'=> ['cost'=>8000, 'prev'=>'epic'],
-                'mythic'   => ['cost'=>12000, 'prev'=>'mythic'], // wait, mythic prev should be epic? no, legendary.
+                'mythic'   => ['cost'=>12000, 'prev'=>'legendary'],
                 'divine'   => ['cost'=>20000, 'prev'=>'mythic'],
             ];
-            // Fix mythic prev
-            $weapons['mythic']['prev'] = 'legendary';
 
             if (!isset($weapons[$rarity])) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid weapon rarity']);
@@ -567,17 +660,15 @@ if(isset($_POST['action'])) {
 
             // Check progression
             if ($current !== $weapons[$rarity]['prev'] && $current !== $rarity) {
-                // If they already have better or equal, they might be rebuying? 
-                // But the user said: "if you dont buy the default weapon, you cant unlocked the next rarity"
                 echo json_encode(['status' => 'error', 'message' => 'LOCKED! Buy the previous rarity first.']);
                 break;
             }
 
             // Check Divine requirements
             if ($rarity === 'divine') {
-                $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$userId");
+                $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=" . (int)$userId);
                 $achTotal = $db->querySingle("SELECT COUNT(*) FROM achievements");
-                $achUnlocked = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=$userId");
+                $achUnlocked = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=" . (int)$userId);
                 
                 if ($player['level'] < 200) {
                     echo json_encode(['status' => 'error', 'message' => "NOT WORTHY! Reach Level 200 first. (Current: {$player['level']})"]);
@@ -594,8 +685,15 @@ if(isset($_POST['action'])) {
             }
 
             if ($gold >= $weapons[$rarity]['cost']) {
-                $db->exec("UPDATE player_gold SET total=total-{$weapons[$rarity]['cost']} WHERE id=$userId");
-                $db->exec("UPDATE player SET weapon_rarity='$rarity' WHERE id=$userId");
+                $u1 = $db->prepare("UPDATE player_gold SET total=total-? WHERE id=?");
+                $u1->bindValue(1, $weapons[$rarity]['cost']);
+                $u1->bindValue(2, $userId);
+                $u1->execute();
+
+                $u2 = $db->prepare("UPDATE player SET weapon_rarity=? WHERE id=?");
+                $u2->bindValue(1, $rarity);
+                $u2->bindValue(2, $userId);
+                $u2->execute();
                 
                 // Log purchase
                 $stmtLog = $db->prepare("INSERT INTO gold_log (user_id, amount, source) VALUES (?, ?, ?)");
@@ -625,9 +723,13 @@ if(isset($_POST['action'])) {
 
             // Check cooldown (3 days = 72 hours)
             $sourceName = "Bought Item: {$items[$key]['name']}";
-            $lastPurchase = $db->querySingle("SELECT created_at FROM gold_log WHERE user_id=$userId AND source='$sourceName' ORDER BY created_at DESC LIMIT 1");
+            $stmtLast = $db->prepare("SELECT created_at FROM gold_log WHERE user_id=? AND source=? ORDER BY created_at DESC LIMIT 1");
+            $stmtLast->bindValue(1, $userId);
+            $stmtLast->bindValue(2, $sourceName);
+            $lastPurchase = $stmtLast->execute()->fetchArray(SQLITE3_ASSOC);
+            
             if ($lastPurchase) {
-                $lastTime = strtotime($lastPurchase);
+                $lastTime = strtotime($lastPurchase['created_at']);
                 $diff = time() - $lastTime;
                 $cooldown = 3 * 24 * 60 * 60; // 3 days
                 if ($diff < $cooldown) {
@@ -644,7 +746,10 @@ if(isset($_POST['action'])) {
 
             $gold = getGold($db, $userId);
             if ($gold >= $items[$key]['cost']) {
-                $db->exec("UPDATE player_gold SET total=total-{$items[$key]['cost']} WHERE id=$userId");
+                $u1 = $db->prepare("UPDATE player_gold SET total=total-? WHERE id=?");
+                $u1->bindValue(1, $items[$key]['cost']);
+                $u1->bindValue(2, $userId);
+                $u1->execute();
                 
                 // Log purchase
                 $stmtLog = $db->prepare("INSERT INTO gold_log (user_id, amount, source) VALUES (?, ?, ?)");
@@ -665,25 +770,34 @@ if(isset($_POST['action'])) {
             $userId = $_SESSION['user_id'] ?? 1;
             $player = getPlayer($db, $userId);
             $gold = getGold($db, $userId);
-            $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$userId");
-            $totalXPEarned = $db->querySingle("SELECT COALESCE(SUM(xp_reward),0) FROM quests WHERE completed=1 AND user_id=$userId");
-            $totalGoldEarned = $db->querySingle("SELECT COALESCE(SUM(gold_reward),0) FROM quests WHERE completed=1 AND user_id=$userId");
-            $hardDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND difficulty='hard' AND user_id=$userId");
-            $legendaryDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND difficulty='legendary' AND user_id=$userId");
+            
+            $uid = (int)$userId;
+            $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$uid");
+            $totalXPEarned = $db->querySingle("SELECT COALESCE(SUM(xp_reward),0) FROM quests WHERE completed=1 AND user_id=$uid");
+            $totalGoldEarned = $db->querySingle("SELECT COALESCE(SUM(gold_reward),0) FROM quests WHERE completed=1 AND user_id=$uid");
+            $hardDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND difficulty='hard' AND user_id=$uid");
+            $legendaryDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND difficulty='legendary' AND user_id=$uid");
             
             $catData = [];
-            $catRes = $db->query("SELECT category, COUNT(*) as cnt FROM quests WHERE completed=1 AND user_id=$userId GROUP BY category ORDER BY cnt DESC");
+            $catStmt = $db->prepare("SELECT category, COUNT(*) as cnt FROM quests WHERE completed=1 AND user_id=? GROUP BY category ORDER BY cnt DESC");
+            $catStmt->bindValue(1, $userId);
+            $catRes = $catStmt->execute();
             while ($r = $catRes->fetchArray(SQLITE3_ASSOC)) $catData[] = $r;
             
             $last7 = [];
             for ($i = 6; $i >= 0; $i--) {
                 $date = date('Y-m-d', strtotime("-$i days"));
-                $cnt = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND date(completed_at)='$date' AND user_id=$userId");
+                $stmt7 = $db->prepare("SELECT COUNT(*) FROM quests WHERE completed=1 AND date(completed_at)=? AND user_id=?");
+                $stmt7->bindValue(1, $date);
+                $stmt7->bindValue(2, $userId);
+                $cnt = $stmt7->execute()->fetchArray()[0];
                 $last7[] = ['date' => date('D', strtotime($date)), 'count' => (int)$cnt];
             }
             
             $diffData = [];
-            $diffRes = $db->query("SELECT difficulty, COUNT(*) as cnt FROM quests WHERE completed=1 AND user_id=$userId GROUP BY difficulty");
+            $diffStmt = $db->prepare("SELECT difficulty, COUNT(*) as cnt FROM quests WHERE completed=1 AND user_id=? GROUP BY difficulty");
+            $diffStmt->bindValue(1, $userId);
+            $diffRes = $diffStmt->execute();
             while ($r = $diffRes->fetchArray(SQLITE3_ASSOC)) $diffData[$r['difficulty']] = $r['cnt'];
             
             echo json_encode([
@@ -696,7 +810,7 @@ if(isset($_POST['action'])) {
                     'totalGoldEarned' => $totalGoldEarned,
                     'hardDone' => $hardDone,
                     'legendaryDone' => $legendaryDone,
-                    'achDone' => $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=$userId")
+                    'achDone' => $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=$uid")
                 ],
                 'catData' => $catData,
                 'last7' => $last7,
@@ -708,9 +822,10 @@ if(isset($_POST['action'])) {
             $userId = $_SESSION['user_id'] ?? 1;
             $player = getPlayer($db, $userId);
             $gold = getGold($db, $userId);
-            $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$userId");
-            $achDone = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=$userId");
-            $totalXP = $db->querySingle("SELECT COALESCE(SUM(xp_reward),0) FROM quests WHERE completed=1 AND user_id=$userId");
+            $uid = (int)$userId;
+            $totalDone = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND user_id=$uid");
+            $achDone = $db->querySingle("SELECT COUNT(*) FROM achievements_unlocked WHERE user_id=$uid");
+            $totalXP = $db->querySingle("SELECT COALESCE(SUM(xp_reward),0) FROM quests WHERE completed=1 AND user_id=$uid");
             
             echo json_encode([
                 'status' => 'success',
@@ -724,20 +839,28 @@ if(isset($_POST['action'])) {
 
         case 'getDailyLogData':
             $userId = $_SESSION['user_id'] ?? 1;
-            $todayQuests = $db->query("SELECT * FROM quests WHERE completed=1 AND date(completed_at)=date('now') AND user_id=$userId ORDER BY completed_at DESC");
+            
+            $todayStmt = $db->prepare("SELECT * FROM quests WHERE completed=1 AND date(completed_at)=date('now') AND user_id=? ORDER BY completed_at DESC");
+            $todayStmt->bindValue(1, $userId);
+            $todayRes = $todayStmt->execute();
             $todayArr = [];
-            while ($r = $todayQuests->fetchArray(SQLITE3_ASSOC)) $todayArr[] = $r;
+            while ($r = $todayRes->fetchArray(SQLITE3_ASSOC)) $todayArr[] = $r;
             
             $heatmap = [];
             for ($i = 13; $i >= 0; $i--) {
                 $d = date('Y-m-d', strtotime("-$i days"));
-                $cnt = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1 AND date(completed_at)='$d' AND user_id=$userId");
+                $hStmt = $db->prepare("SELECT COUNT(*) FROM quests WHERE completed=1 AND date(completed_at)=? AND user_id=?");
+                $hStmt->bindValue(1, $d);
+                $hStmt->bindValue(2, $userId);
+                $cnt = $hStmt->execute()->fetchArray()[0];
                 $heatmap[] = ['date' => $d, 'label' => date('D d', strtotime($d)), 'count' => (int)$cnt];
             }
             
-            $pending = $db->query("SELECT * FROM quests WHERE completed=0 AND user_id=$userId ORDER BY CASE priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END, created_at ASC LIMIT 8");
+            $pendingStmt = $db->prepare("SELECT * FROM quests WHERE completed=0 AND user_id=? ORDER BY CASE priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END, created_at ASC LIMIT 8");
+            $pendingStmt->bindValue(1, $userId);
+            $pendingRes = $pendingStmt->execute();
             $pendArr = [];
-            while ($r = $pending->fetchArray(SQLITE3_ASSOC)) $pendArr[] = $r;
+            while ($r = $pendingRes->fetchArray(SQLITE3_ASSOC)) $pendArr[] = $r;
             
             echo json_encode([
                 'status' => 'success',
@@ -750,9 +873,18 @@ if(isset($_POST['action'])) {
 
         case 'resetProgress':
             $userId = $_SESSION['user_id'] ?? 1;
-            $db->exec("DELETE FROM quests WHERE user_id=$userId");
-            $db->exec("DELETE FROM achievements_unlocked WHERE user_id=$userId");
-            $db->exec("UPDATE player SET level=1, xp=0, xp_next=100 WHERE id=$userId");
+            
+            $r1 = $db->prepare("DELETE FROM quests WHERE user_id=?");
+            $r1->bindValue(1, $userId);
+            $r1->execute();
+
+            $r2 = $db->prepare("DELETE FROM achievements_unlocked WHERE user_id=?");
+            $r2->bindValue(1, $userId);
+            $r2->execute();
+
+            $r3 = $db->prepare("UPDATE player SET level=1, xp=0, xp_next=100 WHERE id=?");
+            $r3->bindValue(1, $userId);
+            $r3->execute();
             $db->exec("UPDATE player_gold SET total=0 WHERE id=$userId");
             echo json_encode(['status' => 'success', 'message' => '⚠️ Your progress has been reset!']);
             break;
@@ -800,7 +932,9 @@ if(isset($_POST['action'])) {
         case 'getUserRewards':
             $userId = $_SESSION['user_id'] ?? 1;
             $rewards = [];
-            $res = $db->query("SELECT * FROM user_rewards WHERE user_id=$userId ORDER BY created_at DESC");
+            $stmt = $db->prepare("SELECT * FROM user_rewards WHERE user_id=? ORDER BY created_at DESC");
+            $stmt->bindValue(1, $userId);
+            $res = $stmt->execute();
             while($r = $res->fetchArray(SQLITE3_ASSOC)) $rewards[] = $r;
             echo json_encode(['status' => 'success', 'data' => $rewards]);
             break;
@@ -833,7 +967,10 @@ if(isset($_POST['action'])) {
             $userId = $_SESSION['user_id'] ?? 1;
             $id = $_POST['id'] ?? 0;
             if($id) {
-                $db->exec("DELETE FROM user_rewards WHERE id=$id AND user_id=$userId");
+                $stmt = $db->prepare("DELETE FROM user_rewards WHERE id=? AND user_id=?");
+                $stmt->bindValue(1, $id);
+                $stmt->bindValue(2, $userId);
+                $stmt->execute();
                 echo json_encode(['status' => 'success']);
             }
             break;
@@ -842,13 +979,23 @@ if(isset($_POST['action'])) {
             $userId = $_SESSION['user_id'] ?? 1;
             $id = $_POST['id'] ?? 0;
             if($id) {
-                $reward = $db->querySingle("SELECT * FROM user_rewards WHERE id=$id AND user_id=$userId", true);
+                $stmt = $db->prepare("SELECT * FROM user_rewards WHERE id=? AND user_id=?");
+                $stmt->bindValue(1, $id);
+                $stmt->bindValue(2, $userId);
+                $reward = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+                
                 $gold = getGold($db, $userId);
                 
                 if($reward) {
                     if($gold >= $reward['cost']) {
-                        $db->exec("UPDATE player_gold SET total = total - {$reward['cost']} WHERE id=$userId");
-                        $db->exec("UPDATE user_rewards SET redeemed_count = redeemed_count + 1 WHERE id=$id");
+                        $u1 = $db->prepare("UPDATE player_gold SET total = total - ? WHERE id=?");
+                        $u1->bindValue(1, $reward['cost']);
+                        $u1->bindValue(2, $userId);
+                        $u1->execute();
+
+                        $u2 = $db->prepare("UPDATE user_rewards SET redeemed_count = redeemed_count + 1 WHERE id=?");
+                        $u2->bindValue(1, $id);
+                        $u2->execute();
                         
                         // Log redemption
                         $stmtLog = $db->prepare("INSERT INTO gold_log (user_id, amount, source) VALUES (?, ?, ?)");
@@ -876,20 +1023,19 @@ function applyQuestPenalties($db, $userId) {
     $today = date('Y-m-d');
     
     // Find active, non-paused quests that are overdue
-    // If due_date < today and completed=0 and is_paused=0
-    $res = $db->query("SELECT * FROM quests WHERE user_id=$userId AND completed=0 AND is_paused=0 AND (due_date IS NOT NULL AND due_date != '') AND due_date < '$today'");
+    $stmt = $db->prepare("SELECT * FROM quests WHERE user_id=? AND completed=0 AND is_paused=0 AND (due_date IS NOT NULL AND due_date != '') AND due_date < ?");
+    $stmt->bindValue(1, $userId);
+    $stmt->bindValue(2, $today);
+    $res = $stmt->execute();
     
     $totalPenalty = 0;
     
     while ($q = $res->fetchArray(SQLITE3_ASSOC)) {
-        // last_penalty_date tracks the last day we applied the penalty.
-        // If it's NULL, we start from the due_date.
         $lastCheckStr = $q['last_penalty_date'] ?: $q['due_date'];
         
         $lastDate = new DateTime($lastCheckStr);
         $currDate = new DateTime($today);
         
-        // Ensure time parts are zeroed for day-only comparison
         $lastDate->setTime(0,0,0);
         $currDate->setTime(0,0,0);
         
@@ -900,19 +1046,25 @@ function applyQuestPenalties($db, $userId) {
             $totalPenalty += $penalty;
             
             // Log the penalty
-            $stmt = $db->prepare("INSERT INTO gold_log (user_id, amount, source) VALUES (?, ?, ?)");
-            $stmt->bindValue(1, $userId);
-            $stmt->bindValue(2, -$penalty);
-            $stmt->bindValue(3, "Penalty: Overdue \"{$q['title']}\"");
-            $stmt->execute();
+            $stmtLog = $db->prepare("INSERT INTO gold_log (user_id, amount, source) VALUES (?, ?, ?)");
+            $stmtLog->bindValue(1, $userId);
+            $stmtLog->bindValue(2, -$penalty);
+            $stmtLog->bindValue(3, "Penalty: Overdue \"{$q['title']}\"");
+            $stmtLog->execute();
             
             // Update the quest last check date to today
-            $db->exec("UPDATE quests SET last_penalty_date = '$today' WHERE id = {$q['id']}");
+            $uStmt = $db->prepare("UPDATE quests SET last_penalty_date = ? WHERE id = ?");
+            $uStmt->bindValue(1, $today);
+            $uStmt->bindValue(2, $q['id']);
+            $uStmt->execute();
         }
     }
     
     if ($totalPenalty > 0) {
-        $db->exec("UPDATE player_gold SET total = total - $totalPenalty WHERE id = $userId");
+        $uGold = $db->prepare("UPDATE player_gold SET total = total - ? WHERE id = ?");
+        $uGold->bindValue(1, $totalPenalty);
+        $uGold->bindValue(2, $userId);
+        $uGold->execute();
     }
 }
 

@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+// Generate CSRF token if not exists
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Basic Router
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -20,6 +25,7 @@ if (isset($_SESSION['user_id']) && in_array($page, $publicPages)) {
 // Map page names to view files
 $viewFile = match($page) {
     'login' => 'login.php',
+    'register' => 'login.php',
     'dashboard' => 'dashboard.php',
     'quests' => 'quests.php',
     'character' => 'character.php',
