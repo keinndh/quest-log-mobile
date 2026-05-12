@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/img/icon-512.png" width="128" height="128" alt="Quest Log Logo">
+  <img src="/public/assets/img/app-opening.png" width="128" height="128" alt="Quest Log Logo">
   
   # Quest Log
   
