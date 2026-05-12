@@ -1,60 +1,52 @@
-const CACHE_NAME = 'quest-log-v3'; // Bumped version to force update
-const ASSETS = [
-  './',
-  'index.html',
-  'assets/css/pixel.css',
-  'assets/js/db.js',
-  'assets/js/pixel.js',
-  'assets/js/dashboard.js',
-  'assets/js/quests.js',
-  'assets/js/character.js',
-  'assets/js/achievements.js',
-  'assets/js/shop.js',
-  'assets/js/stats.js',
-  'assets/js/leaderboard.js',
-  'assets/js/daily-log.js',
-  'assets/js/settings.js',
-  'assets/js/user_rewards.js',
-  'pages/quests.html',
-  'pages/character.html',
-  'pages/achievements.html',
-  'pages/shop.html',
-  'pages/stats.html',
-  'pages/leaderboard.html',
-  'pages/daily-log.html',
-  'pages/settings.html',
-  'pages/user_rewards.html'
-];
+// This is the "Offline page" service worker
 
-// Install Service Worker
-self.addEventListener('install', event => {
-  self.skipWaiting(); // Force active immediately
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
+
+const CACHE = "pwabuilder-page-v4";
+
+// The offline fallback page is our main Single Page App entry point
+const offlineFallbackPage = "index.html";
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener('install', async (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('[SW] Caching system assets (v3)');
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE)
+      .then((cache) => {
+          // Add core assets to ensure the fallback page looks right
+          cache.add('assets/css/pixel.css');
+          cache.add('assets/js/pixel.js');
+          return cache.add(offlineFallbackPage);
+      })
   );
 });
 
-// Activate & Cleanup Old Caches
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      );
-    })
-  );
-  return self.clients.claim(); // Take control of pages immediately
-});
+if (workbox.navigationPreload.isSupported()) {
+  workbox.navigationPreload.enable();
+}
 
-// Fetch Strategy: Network first, then fallback to cache
-// This is safer for development so you see your CSS changes
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
-  );
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        const preloadResp = await event.preloadResponse;
+
+        if (preloadResp) {
+          return preloadResp;
+        }
+
+        const networkResp = await fetch(event.request);
+        return networkResp;
+      } catch (error) {
+
+        const cache = await caches.open(CACHE);
+        const cachedResp = await cache.match(offlineFallbackPage);
+        return cachedResp;
+      }
+    })());
+  }
 });
