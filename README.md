@@ -3,7 +3,7 @@
   
   # Quest Log
   
-  **Turn your daily tasks into a pixel-art RPG adventure. A free and open-source gamified productivity app for Android.**
+  **Turn your daily tasks into a pixel-art RPG adventure. A free and open-source gamified productivity app for Android. Enter the app online once to cache your assets, and your adventure continues fully offline.**
 
   ![Android 6.0+](https://img.shields.io/badge/android-6.0+-brightgreen)
   ![License](https://img.shields.io/github/license/keinndh/quest-log-mobile)
@@ -21,7 +21,7 @@
 - **RPG Task Management**: Create quests with varying difficulties (Easy to Legendary) and earn rewards upon completion.
 - **Hero Progression**: Level up your character, track stats, and watch your Kingdom grow.
 - **Weapon Shop**: Spend your hard-earned gold on tiered weapons—from common swords to Divine artifacts.
-- **PWA Excellence**: Fully installable on iOS and Android. Works **offline** via Service Workers.
+- **PWA Excellence**: Fully installable on iOS and Android. Enter the app once while online to cache your hero's assets, and your adventure continues fully **offline** via Service Workers.
 - **Immersive Audio**: Retro sound effects for clicks, quest completions, and level-ups.
 - **Data Portability**: Export and Import your save data as JSON anytime.
 - **Cloud Sync**: Optional Firebase integration to keep your progress safe across devices.
