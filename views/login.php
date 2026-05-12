@@ -98,7 +98,7 @@
         <input type="password" id="login-password" class="pixel-input" placeholder="••••••••" required>
         <span class="password-toggle" onclick="togglePassword('login-password')">👁️</span>
       </div>
-      <div style="text-align:right; margin-top: -12px; margin-bottom: 20px;">
+      <div style="text-align:right; margin-top: 8px; margin-bottom: 20px;">
         <a onclick="forgotPassword()" style="font-family:'VT323'; font-size:14px; color:var(--text-dim); text-decoration:none; cursor:pointer;">Forgot Password?</a>
       </div>
     </div>
@@ -155,4 +155,5 @@
 </script>
 </body>
 </html>
+
 
