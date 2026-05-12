@@ -18,7 +18,7 @@ if(isset($_POST['action'])) {
             $res = $stmt->execute();
             $row = $res->fetchArray(SQLITE3_ASSOC);
             
-            if($row && $pass === $row['password']) { // In a real app, use password_verify
+            if($row && password_verify($pass, $row['password'])) {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['username'] = $row['username'];
                 echo json_encode(['status' => 'success']);
@@ -31,8 +31,8 @@ if(isset($_POST['action'])) {
             $user = trim($_POST['username'] ?? '');
             $pass = $_POST['password'] ?? '';
             
-            if(!$user || !$pass) {
-                echo json_encode(['status' => 'error', 'message' => 'Username and password required']);
+            if(!$user || strlen($pass) < 8) {
+                echo json_encode(['status' => 'error', 'message' => 'Username required and password must be at least 8 characters!']);
                 break;
             }
             
@@ -45,13 +45,14 @@ if(isset($_POST['action'])) {
                 break;
             }
             
+            $hashed = password_hash($pass, PASSWORD_DEFAULT);
             $stmt = $db->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
             $stmt->bindValue(1, $user);
-            $stmt->bindValue(2, $pass);
+            $stmt->bindValue(2, $hashed);
             
             if($stmt->execute()) {
                 $newId = $db->lastInsertRowID();
-                // Initialize player data for the new user
+                // Initialize player data
                 $pStmt = $db->prepare("INSERT INTO player (id, name) VALUES (?, ?)");
                 $pStmt->bindValue(1, $newId);
                 $pStmt->bindValue(2, $user);
@@ -413,19 +414,24 @@ if(isset($_POST['action'])) {
             $new = $_POST['password'] ?? '';
             
             // Verify current
-            $user = $db->querySingle("SELECT password FROM users WHERE id = $userId", true);
-            if (!$user || $current !== $user['password']) {
+            $stmt = $db->prepare("SELECT password FROM users WHERE id = ?");
+            $stmt->bindValue(1, $userId);
+            $res = $stmt->execute();
+            $user = $res->fetchArray(SQLITE3_ASSOC);
+
+            if (!$user || !password_verify($current, $user['password'])) {
                 echo json_encode(['status' => 'error', 'message' => 'Current password incorrect']);
                 break;
             }
 
-            if (strlen($new) < 4) {
-                echo json_encode(['status' => 'error', 'message' => 'New password too short']);
+            if (strlen($new) < 8) {
+                echo json_encode(['status' => 'error', 'message' => 'New password must be at least 8 characters']);
                 break;
             }
             
+            $hashed = password_hash($new, PASSWORD_DEFAULT);
             $stmt = $db->prepare("UPDATE users SET password = ? WHERE id = ?");
-            $stmt->bindValue(1, $new);
+            $stmt->bindValue(1, $hashed);
             $stmt->bindValue(2, $userId);
             
             if ($stmt->execute()) {

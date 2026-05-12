@@ -7,21 +7,17 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 $totalQuests = $db->querySingle("SELECT COUNT(*) FROM quests WHERE completed=1");
 $newAchCount = $db->querySingle("SELECT COUNT(*) FROM achievements WHERE unlocked=1 AND unlocked_at >= datetime('now','-1 day')");
 
-$inPages = strpos($_SERVER['PHP_SELF'], '/pages/') !== false;
-$base    = $inPages ? '' : 'pages/';
-$rootBase = $inPages ? '../' : '';
-
 $navItems = [
-    ['href' => $rootBase.'index.html',    'icon' => '🏰', 'label' => 'KINGDOM',      'page' => 'index'],
-    ['href' => $base.'quests.html',       'icon' => '📜', 'label' => 'QUESTS',        'page' => 'quests'],
-    ['href' => $base.'character.html',    'icon' => '⚔️', 'label' => 'CHARACTER',    'page' => 'character'],
-    ['href' => $base.'achievements.html', 'icon' => '🏆', 'label' => 'ACHIEVEMENTS',  'page' => 'achievements'],
-    ['href' => $base.'shop.html',         'icon' => '🛒', 'label' => 'SHOP',          'page' => 'shop'],
-    ['href' => $base.'user_rewards.html',  'icon' => '🎁', 'label' => 'REWARDS',       'page' => 'user_rewards'],
-    ['href' => $base.'stats.html',        'icon' => '📊', 'label' => 'STATS',         'page' => 'stats'],
-    ['href' => $base.'leaderboard.html',  'icon' => '👑', 'label' => 'RANKS',         'page' => 'leaderboard'],
-    ['href' => $base.'daily-log.html',    'icon' => '📅', 'label' => 'DAILY LOG',     'page' => 'daily-log'],
-    ['href' => $base.'settings.html',     'icon' => '⚙️', 'label' => 'SETTINGS',     'page' => 'settings'],
+    ['href' => '?page=dashboard',    'icon' => '🏰', 'label' => 'KINGDOM',      'page' => 'dashboard'],
+    ['href' => '?page=quests',       'icon' => '📜', 'label' => 'QUESTS',        'page' => 'quests'],
+    ['href' => '?page=character',    'icon' => '⚔️', 'label' => 'CHARACTER',    'page' => 'character'],
+    ['href' => '?page=achievements', 'icon' => '🏆', 'label' => 'ACHIEVEMENTS',  'page' => 'achievements'],
+    ['href' => '?page=shop',         'icon' => '🛒', 'label' => 'SHOP',          'page' => 'shop'],
+    ['href' => '?page=rewards',      'icon' => '🎁', 'label' => 'REWARDS',       'page' => 'rewards'],
+    ['href' => '?page=stats',        'icon' => '📊', 'label' => 'STATS',         'page' => 'stats'],
+    ['href' => '?page=leaderboard',  'icon' => '👑', 'label' => 'RANKS',         'page' => 'leaderboard'],
+    ['href' => '?page=daily-log',    'icon' => '📅', 'label' => 'DAILY LOG',     'page' => 'daily-log'],
+    ['href' => '?page=settings',     'icon' => '⚙️', 'label' => 'SETTINGS',     'page' => 'settings'],
 ];
 
 $xpPct = $player['xp_next'] > 0 ? round(($player['xp'] / $player['xp_next']) * 100) : 0;
@@ -34,7 +30,7 @@ $xpPct = $player['xp_next'] > 0 ? round(($player['xp'] / $player['xp_next']) * 1
 <title>QUEST LOG — <?= strtoupper($currentPage) ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?= $rootBase ?>assets/css/pixel.css">
+<link rel="stylesheet" href="assets/css/pixel.css">
 <style>
   .nav-xp-mini { font-size: 7px; color: var(--text-dim); }
   .nav-player-wrap { display:flex; align-items:center; gap:12px; padding: 0 16px; border-left: 2px solid rgba(255,215,0,0.2); }
@@ -45,7 +41,7 @@ $xpPct = $player['xp_next'] > 0 ? round(($player['xp'] / $player['xp_next']) * 1
 <div class="scanlines"></div>
 
 <nav class="nav-pixel">
-  <a href="<?= $rootBase ?>index.html" class="nav-logo">
+  <a href="?page=dashboard" class="nav-logo">
     <span style="font-size:24px;">⚔️</span>
     <span>QUEST<br><span style="color:var(--purple-glow);font-size:10px;">LOG</span></span>
   </a>

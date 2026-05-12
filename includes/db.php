@@ -123,13 +123,19 @@ function initDB($db) {
     // Seed default user if empty
     $u = $db->querySingle("SELECT COUNT(*) FROM users");
     if ($u == 0) {
-        $db->exec("INSERT INTO users (username, password) VALUES ('Hero', 'quest')");
+        $hashed = password_hash('quest', PASSWORD_DEFAULT);
+        $stmt = $db->prepare("INSERT INTO users (username, password) VALUES ('Hero', ?)");
+        $stmt->bindValue(1, $hashed);
+        $stmt->execute();
     }
 
     // Seed admin user if missing
     $adminExists = $db->querySingle("SELECT COUNT(*) FROM users WHERE username='admin'");
     if ($adminExists == 0) {
-        $db->exec("INSERT INTO users (username, password) VALUES ('admin', 'adminmonengr28')");
+        $hashed = password_hash('adminmonengr28', PASSWORD_DEFAULT);
+        $stmt = $db->prepare("INSERT INTO users (username, password) VALUES ('admin', ?)");
+        $stmt->bindValue(1, $hashed);
+        $stmt->execute();
         $adminId = $db->lastInsertRowID();
         // Check if player entry for this ID already exists (unlikely but safe)
         $pExists = $db->querySingle("SELECT COUNT(*) FROM player WHERE id=$adminId");
