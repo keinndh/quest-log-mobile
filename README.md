@@ -38,7 +38,7 @@
       <td style="border: none;"><img src="/assets/img/in-app-screenshot/login-portrait.png" width="200" alt="Login"></td>
       <td style="border: none;"><img src="/assets/img/in-app-screenshot/kingdom-portrait.png" width="200" alt="Kingdom"></td>
       <td style="border: none;"><img src="/assets/img/in-app-screenshot/quests-portrait.png" width="200" alt="Quests"></td>
-      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/shop-portrait.png" width="200" alt="Shop"></td>
+      <td style="border: none;"><img src="/assets/img/in-app-screenshot/shop-portrait.png" width="200" alt="Shop"></td>
     </tr>
     <tr>
       <td style="border: none;"><img src="/assets/img/in-app-screenshot/rank-portrait.png" width="200" alt="Rank"></td>
