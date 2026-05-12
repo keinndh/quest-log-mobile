@@ -14,23 +14,23 @@
 
 ---
 
-### 🛡️ Main Features
+### Main Features
 
 <div align="left">
 
-- **⚔️ RPG Task Management**: Create quests with varying difficulties (Easy to Legendary) and earn rewards upon completion.
-- **📈 Hero Progression**: Level up your character, track stats, and watch your Kingdom grow.
-- **💰 Weapon Shop**: Spend your hard-earned gold on tiered weapons—from common swords to Divine artifacts.
-- **📱 PWA Excellence**: Fully installable on iOS and Android. Works **offline** via Service Workers.
-- **🎵 Immersive Audio**: Retro sound effects for clicks, quest completions, and level-ups.
-- **💾 Data Portability**: Export and Import your save data as JSON anytime.
-- **☁️ Cloud Sync**: Optional Firebase integration to keep your progress safe across devices.
+- **RPG Task Management**: Create quests with varying difficulties (Easy to Legendary) and earn rewards upon completion.
+- **Hero Progression**: Level up your character, track stats, and watch your Kingdom grow.
+- **Weapon Shop**: Spend your hard-earned gold on tiered weapons—from common swords to Divine artifacts.
+- **PWA Excellence**: Fully installable on iOS and Android. Works **offline** via Service Workers.
+- **Immersive Audio**: Retro sound effects for clicks, quest completions, and level-ups.
+- **Data Portability**: Export and Import your save data as JSON anytime.
+- **Cloud Sync**: Optional Firebase integration to keep your progress safe across devices.
 
 </div>
 
 ---
 
-### 📸 Screenshots
+### Screenshots
 
 <div align="center">
   <table style="border: none;">
@@ -51,7 +51,7 @@
 
 ---
 
-### 🏰 Getting Started
+### Getting Started
 
 1. **Clone the repository** to your local machine.
 2. Open `login.html` in any modern browser to start locally.
@@ -60,5 +60,5 @@
 
 ---
 <div align="center">
-  Created with ❤️ by the Quest Log Team
+  Created with love by the Quest Log Team
 </div>
