@@ -69,24 +69,40 @@ $(document).on("click", "button, .btn-pixel, .sidebar-links a, .nav-logo", funct
 // Auth Check (Immediate Redirect)
 (function() {
   const path = window.location.pathname;
-  const isAuthPage = path.endsWith('index.html') || path.endsWith('register.html');
+  const isAuthPage = path.endsWith('login.html') || path.endsWith('register.html');
   const userId = localStorage.getItem('ql_user_id');
   
   // Detect if we are in the root or /pages/ folder
   const isRoot = path.endsWith('index.html') || path.endsWith('/') || !path.includes('.html');
-  const loginPath = isRoot ? 'index.html' : 'index.html';
+  const loginPath = isRoot ? 'login.html' : '../login.html';
 
   if (!isAuthPage && !userId) {
     window.location.href = loginPath;
   }
 })();
 
+// Global AJAX Setup for CSRF
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (settings.type === 'POST') {
+            const token = window.csrfToken;
+            if (!token) return;
+
+            if (settings.data instanceof FormData) {
+                settings.data.append('csrf_token', token);
+            } else if (typeof settings.data === 'string') {
+                settings.data += (settings.data ? '&' : '') + 'csrf_token=' + encodeURIComponent(token);
+            } else if (typeof settings.data === 'object' && settings.data !== null) {
+                settings.data.csrf_token = token;
+            } else if (!settings.data) {
+                settings.data = { csrf_token: token };
+            }
+        }
+    }
+});
+
 // Attach click sounds to all pixel buttons
 document.addEventListener('DOMContentLoaded', () => {
-  const path = window.location.pathname;
-  const isRoot = path.endsWith('index.html') || path.endsWith('/') || !path.includes('.html');
-  const loginPath = isRoot ? 'index.html' : 'index.html';
-
   // Initialize Sidebar
   injectSidebar();
   
@@ -107,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     if (confirm("⚔️ Are you sure you wish to retreat to the login screen, Hero?")) {
         localStorage.removeItem('ql_user_id');
-        window.location.href = loginPath;
+        window.location.href = '?page=login';
     }
   });
 
@@ -239,13 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function injectSidebar() {
     if ($(".sidebar-pixel").length > 0) return;
 
-    const path = window.location.pathname;
-    // Determine if we are in the root directory (looking for index.html or the base /)
-    const isRoot = !path.includes('/pages/');
-    
-    // Paths to navigate correctly between root and pages/
-    const toRoot = isRoot ? '' : '../';
-    const toPages = isRoot ? 'pages/' : '';
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPage = urlParams.get('page') || 'dashboard';
 
     const sidebarHtml = `
         <div class="sidebar-overlay"></div>
@@ -257,16 +268,16 @@ function injectSidebar() {
                 </div>
             </div>
             <ul class="sidebar-links">
-                <li><a href="${toRoot}index.html" class="${isRoot ? 'active' : ''}">🏰 KINGDOM</a></li>
-                <li><a href="${toPages}quests.html" class="${path.includes('quests') ? 'active' : ''}">📜 QUESTS</a></li>
-                <li><a href="${toPages}character.html" class="${path.includes('character') ? 'active' : ''}">⚔️ CHARACTER</a></li>
-                <li><a href="${toPages}achievements.html" class="${path.includes('achievements') ? 'active' : ''}">🏆 ACHIEVEMENTS</a></li>
-                <li><a href="${toPages}shop.html" class="${path.includes('shop') ? 'active' : ''}">🛒 SHOP</a></li>
-                <li><a href="${toPages}user_rewards.html" class="${path.includes('user_rewards') ? 'active' : ''}">🎁 REWARDS</a></li>
-                <li><a href="${toPages}stats.html" class="${path.includes('stats') ? 'active' : ''}">📊 STATS</a></li>
-                <li><a href="${toPages}leaderboard.html" class="${path.includes('leaderboard') ? 'active' : ''}">👑 RANKS</a></li>
-                <li><a href="${toPages}daily-log.html" class="${path.includes('daily-log') ? 'active' : ''}">📅 LOG</a></li>
-                <li><a href="${toPages}settings.html" class="${path.includes('settings') ? 'active' : ''}">⚙️ SETTINGS</a></li>
+                <li><a href="?page=dashboard" class="${currentPage === 'dashboard' ? 'active' : ''}">🏰 KINGDOM</a></li>
+                <li><a href="?page=quests" class="${currentPage === 'quests' ? 'active' : ''}">📜 QUESTS</a></li>
+                <li><a href="?page=character" class="${currentPage === 'character' ? 'active' : ''}">⚔️ CHARACTER</a></li>
+                <li><a href="?page=achievements" class="${currentPage === 'achievements' ? 'active' : ''}">🏆 ACHIEVEMENTS</a></li>
+                <li><a href="?page=shop" class="${currentPage === 'shop' ? 'active' : ''}">🛒 SHOP</a></li>
+                <li><a href="?page=rewards" class="${currentPage === 'rewards' ? 'active' : ''}">🎁 REWARDS</a></li>
+                <li><a href="?page=stats" class="${currentPage === 'stats' ? 'active' : ''}">📊 STATS</a></li>
+                <li><a href="?page=leaderboard" class="${currentPage === 'leaderboard' ? 'active' : ''}">👑 RANKS</a></li>
+                <li><a href="?page=daily-log" class="${currentPage === 'daily-log' ? 'active' : ''}">📅 LOG</a></li>
+                <li><a href="?page=settings" class="${currentPage === 'settings' ? 'active' : ''}">⚙️ SETTINGS</a></li>
                 <li style="margin-top: auto; padding-top: 20px; border-top: 2px solid rgba(255,215,0,0.1);">
                     <a id="logout-btn" style="color: var(--accent-red); cursor: pointer;">🚪 LOGOUT</a>
                 </li>
