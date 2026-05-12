@@ -257,7 +257,7 @@ function injectSidebar() {
                 </div>
             </div>
             <ul class="sidebar-links">
-                <li><a href="${toRoot}index.html" class="${isRoot ? 'active' : ''}">🏰 KINGDOM</a></li>
+                <li><a href="${toRoot}dashboard.html" class="${isRoot ? 'active' : ''}">🏰 KINGDOM</a></li>
                 <li><a href="${toPages}quests.html" class="${path.includes('quests') ? 'active' : ''}">📜 QUESTS</a></li>
                 <li><a href="${toPages}character.html" class="${path.includes('character') ? 'active' : ''}">⚔️ CHARACTER</a></li>
                 <li><a href="${toPages}achievements.html" class="${path.includes('achievements') ? 'active' : ''}">🏆 ACHIEVEMENTS</a></li>
@@ -343,4 +343,5 @@ $(document).on("click", "a", function(e) {
         window.location.href = href;
     }, 250);
 });
+
 
