@@ -36,15 +36,15 @@
   <table style="border: none;">
     <tr>
       <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/login-portrait.png" width="200" alt="Login"></td>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/kingdom-portrait.png" width="200" alt="Kingdom"></td>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/quests-portrait.png" width="200" alt="Quests"></td>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/shop-portrait.png" width="200" alt="Shop"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/kingdom-portrait.png" width="200" alt="Kingdom"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/quests-portrait.png" width="200" alt="Quests"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/shop-portrait.png" width="200" alt="Shop"></td>
     </tr>
     <tr>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/rank-portrait.png" width="200" alt="Rank"></td>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/achievement-portrait.png" width="200" alt="Achievements"></td>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/reward-portrait.png" width="200" alt="Rewards"></td>
-      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/sidebar-portrait.png" width="200" alt="Sidebar"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/rank-portrait.png" width="200" alt="Rank"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/achievement-portrait.png" width="200" alt="Achievements"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/reward-portrait.png" width="200" alt="Rewards"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/sidebar-portrait.png" width="200" alt="Sidebar"></td>
     </tr>
   </table>
 </div>
