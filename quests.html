@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUEST LOG — QUESTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/pixel.css">
+<link rel="manifest" href="../manifest.json">
+<style>
+
+  .filter-btn { font-family:'Press Start 2P',monospace; font-size:8px; padding:8px 14px; cursor:pointer; border:2px solid var(--gold-dark); background:transparent; color:var(--text-dim); transition:all 0.1s steps(1); text-decoration: none; display: inline-block; }
+  .filter-btn:hover, .filter-btn.active { background:var(--gold); color:#000; border-color:var(--gold); }
+  
+  .priority-urgent { border-left: 4px solid var(--accent-red) !important; }
+  .priority-high { border-left: 4px solid var(--accent-orange) !important; }
+  .priority-normal { border-left: 4px solid var(--gold-dark) !important; }
+  .diff-legendary { color: var(--accent-orange); }
+  .diff-hard { color: var(--accent-red); }
+  .diff-medium { color: var(--accent-cyan); }
+  .diff-easy { color: var(--accent-green); }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<nav class="nav-pixel">
+  <div class="nav-logo-wrap">
+    <button id="menu-toggle" class="btn-pixel" style="padding:8px 12px; font-size:20px; background:transparent; border-color:rgba(255,215,0,0.3);">☰</button>
+    <a href="../index.html" class="nav-logo">
+      <span style="font-size:24px;">⚔️</span>
+      <span>QUEST<br><span style="color:var(--purple-glow);font-size:10px;">LOG</span></span>
+    </a>
+  </div>
+
+  <div class="nav-player-wrap">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="nav-level-badge" id="nav-level">LV--</span>
+        <span style="font-size:8px;color:var(--gold);" id="nav-name">---</span>
+      </div>
+      <div class="nav-xp-mini" style="margin-top:4px;" id="nav-xp-text">0/0 XP</div>
+      <div class="xp-bar-wrap" style="height:6px;margin-top:3px;width:120px;">
+        <div class="xp-bar-fill" id="nav-xp-fill" style="width:0%;"></div>
+      </div>
+    </div>
+    <div style="font-family:'VT323';font-size:18px;color:var(--gold);" id="nav-gold">
+      💰 0G
+    </div>
+  </div>
+</nav>
+
+<div class="page-container" style="padding-top: 80px;">
+  <div class="page-header">
+    <h1 class="pixel-title">📜 QUEST BOARD</h1>
+    <p class="pixel-subtitle">Manage your missions and conquer your goals</p>
+  </div>
+
+  <div id="system-message" class="pixel-panel" style="display:none;margin-bottom:16px;">
+    <span id="system-message-text" style="font-size:10px;"></span>
+  </div>
+
+  <!-- ADD QUEST PANEL -->
+  <div class="pixel-panel section-gap" id="add-panel" style="display:none;">
+    <h2 class="pixel-title" style="font-size:14px;margin-bottom:20px;" id="form-title">⚔️ NEW QUEST</h2>
+    <form id="add-quest-form">
+      <input type="hidden" id="edit-id" value="">
+      <div class="grid-2" style="gap:20px;margin-bottom:16px;">
+        <div>
+          <label class="pixel-label">QUEST TITLE *</label>
+          <input type="text" id="add-title" class="pixel-input" placeholder="Enter quest name..." required>
+        </div>
+        <div>
+          <label class="pixel-label">CATEGORY</label>
+          <select id="add-category" class="pixel-select pixel-input">
+            <option value="personal">🧘 Personal</option>
+            <option value="work">💼 Work</option>
+            <option value="health">💪 Health</option>
+            <option value="learning">📚 Learning</option>
+            <option value="finance">💰 Finance</option>
+            <option value="social">🤝 Social</option>
+          </select>
+        </div>
+        <div>
+          <label class="pixel-label">DIFFICULTY</label>
+          <select id="add-difficulty" class="pixel-select pixel-input">
+            <option value="easy">⚔️ Easy (+25 XP, +10G)</option>
+            <option value="medium">🗡️ Medium (+50 XP, +25G)</option>
+            <option value="hard">💀 Hard (+100 XP, +50G)</option>
+            <option value="legendary">🌟 Legendary (+250 XP, +150G)</option>
+          </select>
+        </div>
+        <div>
+          <label class="pixel-label">PRIORITY</label>
+          <select id="add-priority" class="pixel-select pixel-input">
+            <option value="low">🔵 Low</option>
+            <option value="normal" selected>🟡 Normal</option>
+            <option value="high">🟠 High</option>
+            <option value="urgent">🔴 URGENT</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="pixel-label">DESCRIPTION (OPTIONAL)</label>
+        <textarea id="add-desc" class="pixel-textarea pixel-input" rows="3" placeholder="Describe your quest..."></textarea>
+      </div>
+      <div class="grid-2" style="gap:20px;margin-bottom:16px;">
+        <div>
+          <label class="pixel-label">START DATE</label>
+          <input type="date" id="add-start-date" class="pixel-input">
+        </div>
+        <div>
+          <label class="pixel-label">DUE DATE</label>
+          <input type="date" id="add-due-date" class="pixel-input">
+        </div>
+      </div>
+      
+      <!-- USER REWARD INTEGRATION -->
+      <div class="pixel-panel" style="background: rgba(155,0,255,0.05); border-color: rgba(155,0,255,0.3); margin-bottom: 16px; padding: 15px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom: 10px;">
+          <input type="checkbox" id="add-with-reward" class="pixel-checkbox" style="width:16px;height:16px;cursor:pointer;">
+          <label for="add-with-reward" class="pixel-label" style="margin:0;cursor:pointer;color:var(--accent-purple);">🎁 ALSO CREATE A REWARD?</label>
+        </div>
+        <div id="reward-fields" style="display:none; padding-left: 26px;">
+          <div class="grid-2" style="gap:20px;">
+            <div>
+              <label class="pixel-label">REWARD COST (GOLD)</label>
+              <input type="number" id="reward-cost" class="pixel-input" value="100" min="1">
+            </div>
+            <div>
+              <label class="pixel-label">REWARD ICON</label>
+              <select id="reward-icon" class="pixel-select pixel-input">
+                <option value="🎁">🎁 Box</option>
+                <option value="🍕">🍕 Food</option>
+                <option value="🎮">🎮 Game</option>
+                <option value="🎬">🎬 Movie</option>
+                <option value="😴">😴 Sleep</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-family:'VT323'; font-size:12px; color:var(--text-dim); margin-top:8px;">
+            * The reward will have the same title as the quest.
+          </p>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button type="submit" id="form-submit" class="btn-pixel btn-pixel-gold">⚔️ ADD QUEST</button>
+        <button type="button" class="btn-pixel btn-pixel-outline" onclick="toggleAdd()">✕ CANCEL</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- CONTROLS ROW -->
+  <div class="quest-board-controls" style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
+    <!-- Top Row: New Quest & Search -->
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <button class="btn-pixel btn-pixel-gold" onclick="toggleAdd()" style="white-space:nowrap;">➕ NEW QUEST</button>
+      <div style="flex:1; min-width:180px;">
+        <form id="search-form" style="display:flex; gap:8px; margin:0;">
+          <input type="text" id="search-input" class="pixel-input" placeholder="SEARCH..." style="flex:1; font-size:14px; padding:8px 12px;">
+          <button type="submit" class="btn-pixel btn-pixel-purple">🔍</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Filters & Sort -->
+    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+      <div class="pixel-dropdown-container">
+        <button class="btn-pixel btn-pixel-outline btn-sm dropdown-trigger" id="status-trigger">⚔️ STATUS</button>
+        <div class="pixel-dropdown-content" id="status-dropdown">
+          <a href="#" data-filter="active" class="state-filter active">⚔️ ACTIVE</a>
+          <a href="#" data-filter="completed" class="state-filter">✓ DONE</a>
+          <a href="#" data-filter="all" class="state-filter">📜 ALL</a>
+        </div>
+      </div>
+
+      <div class="pixel-dropdown-container">
+        <button class="btn-pixel btn-pixel-outline btn-sm dropdown-trigger" id="category-trigger">🎯 CATEGORY</button>
+        <div class="pixel-dropdown-content" id="category-dropdown">
+          <a href="#" data-cat="all" class="cat-filter active">ALL</a>
+          <a href="#" data-cat="work" class="cat-filter">💼 WORK</a>
+          <a href="#" data-cat="health" class="cat-filter">💪 HEALTH</a>
+          <a href="#" data-cat="learning" class="cat-filter">📚 LEARN</a>
+          <a href="#" data-cat="personal" class="cat-filter">🧘 SELF</a>
+          <a href="#" data-cat="finance" class="cat-filter">💰 GOLD</a>
+          <a href="#" data-cat="social" class="cat-filter">🤝 CHAT</a>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; align-items:center; margin-left:auto;">
+        <label style="font-family:'VT323'; font-size:14px; color:var(--text-dim);">SORT:</label>
+        <select id="sort-select" class="pixel-input" style="font-size:11px; padding:6px 8px; width:auto; margin:0;">
+          <option value="newest" selected>NEW</option>
+          <option value="oldest">OLD</option>
+          <option value="xp">XP</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUEST DETAIL MODAL -->
+  <div id="quest-detail-modal" class="pixel-modal" style="display:none;">
+    <div class="pixel-panel" style="max-width:500px;margin:8% auto;position:relative;border-width:4px;">
+      <button onclick="$('#quest-detail-modal').fadeOut()" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px;">✕</button>
+      <div id="quest-detail-content">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <hr class="pixel-divider">
+
+  <!-- QUEST LIST CONTAINER -->
+  <div id="quest-list-container">
+    <div style="text-align:center;padding:60px 40px; font-family:'VT323'; color:var(--text-dim); font-size:24px;">Loading...</div>
+  </div>
+
+</div>
+
+<!-- DELAY / PAUSE MODAL -->
+<div id="delay-modal" class="pixel-modal" style="display:none;">
+  <div class="pixel-panel" style="max-width:400px;margin:10% auto;position:relative;">
+    <h2 class="pixel-title" style="font-size:14px;margin-bottom:20px;">⏸️ PAUSE & DELAY QUEST</h2>
+    <p style="font-family:'VT323';font-size:16px;color:var(--text-dim);margin-bottom:20px;">
+      Retreating for now? Adjust your expected completion date to stop the daily penalties.
+    </p>
+    <form id="delay-form">
+      <input type="hidden" id="delay-quest-id">
+      <div style="margin-bottom:24px;">
+        <label class="pixel-label">NEW END DATE</label>
+        <input type="date" id="delay-due-date" class="pixel-input" required>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button type="submit" class="btn-pixel btn-pixel-gold">💾 CONFIRM DELAY</button>
+        <button type="button" onclick="$('#delay-modal').fadeOut()" class="btn-pixel btn-pixel-outline">CANCEL</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Achievement Toast -->
+<div id="achievement-toast" class="achievement-toast">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span id="toast-icon" style="font-size:32px;"></span>
+    <div>
+      <div style="font-size:8px;color:var(--gold);margin-bottom:4px;">🏆 ACHIEVEMENT UNLOCKED!</div>
+      <div id="toast-title" style="font-size:9px;color:var(--text-main);"></div>
+      <div id="toast-desc" style="font-family:'VT323';font-size:14px;color:var(--text-dim);margin-top:2px;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="module">
+  import { db } from '../assets/js/db.js';
+  window.db = db;
+</script>
+<script type="module" src="assets/js/pixel.js"></script>
+<script type="module" src="assets/js/quests.js"></script>
+
+</body>
+</html>
