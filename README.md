@@ -53,6 +53,5 @@
 
 ### Getting Started
 
-1. **Clone the repository** to your local machine.
-2. **Download the APK** from the [Releases](https://github.com/keinndh/quest-log-mobile/releases) section for the full mobile experience.
-3. Register your hero and begin your epic journey!
+1. **Download the APK** from the [Releases](https://github.com/keinndh/quest-log-mobile/releases) section for the full mobile experience.
+2. Register your hero and begin your epic journey! ⚔️
