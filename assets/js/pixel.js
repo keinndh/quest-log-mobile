@@ -241,7 +241,7 @@ function injectSidebar() {
 
     const path = window.location.pathname;
     // Determine if we are in the root directory (looking for index.html or the base /)
-    const isRoot = !path.includes('/pages/');
+    const isDashboard = path.includes('dashboard');
     
     // Paths to navigate correctly between root and pages/
     const toRoot = '';
@@ -257,7 +257,7 @@ function injectSidebar() {
                 </div>
             </div>
             <ul class="sidebar-links">
-                <li><a href="${toRoot}dashboard.html" class="${isRoot ? 'active' : ''}">🏰 KINGDOM</a></li>
+                <li><a href="${toRoot}dashboard.html" class="${isDashboard ? 'active' : ''}">🏰 KINGDOM</a></li>
                 <li><a href="${toPages}quests.html" class="${path.includes('quests') ? 'active' : ''}">📜 QUESTS</a></li>
                 <li><a href="${toPages}character.html" class="${path.includes('character') ? 'active' : ''}">⚔️ CHARACTER</a></li>
                 <li><a href="${toPages}achievements.html" class="${path.includes('achievements') ? 'active' : ''}">🏆 ACHIEVEMENTS</a></li>
@@ -343,5 +343,6 @@ $(document).on("click", "a", function(e) {
         window.location.href = href;
     }, 250);
 });
+
 
 
