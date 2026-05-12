@@ -23,12 +23,6 @@
       "type": "image/png",
       "purpose": "maskable"
     },
-    {
-      "src": "assets/img/app-icon.png",
-      "sizes": "2048x2048",
-      "type": "image/png",
-      "purpose": "any"
-    }
   ],
   "screenshots": [
     {
