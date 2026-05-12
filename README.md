@@ -23,7 +23,7 @@
 - **Weapon Shop**: Spend your hard-earned gold on tiered weapons—from common swords to Divine artifacts.
 - **PWA Excellence**: Fully installable on iOS and Android. Enter the app once while online to cache your hero's assets, and your adventure continues fully **offline** via Service Workers.
 - **Immersive Audio**: Retro sound effects for clicks, quest completions, and level-ups.
-- **Data Portability**: Export and Import your save data as JSON anytime.
+- **Data Portability**: Export and import your save data as JSON anytime.
 - **Cloud Sync**: Optional Firebase integration to keep your progress safe across devices.
 
 </div>
@@ -35,16 +35,16 @@
 <div align="center">
   <table style="border: none;">
     <tr>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/login-portrait.png" width="200" alt="Login"></td>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/kingdom-portrait.png" width="200" alt="Kingdom"></td>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/quests-portrait.png" width="200" alt="Quests"></td>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/shop-portrait.png" width="200" alt="Shop"></td>
+      <td style="border: none;"><img src="/public/assets/img/in-app-screenshot/login-portrait.png" width="200" alt="Login"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/kingdom-portrait.png" width="200" alt="Kingdom"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/quests-portrait.png" width="200" alt="Quests"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/shop-portrait.png" width="200" alt="Shop"></td>
     </tr>
     <tr>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/rank-portrait.png" width="200" alt="Rank"></td>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/achievement-portrait.png" width="200" alt="Achievements"></td>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/reward-portrait.png" width="200" alt="Rewards"></td>
-      <td style="border: none;"><img src="assets/img/in-app-screenshot/sidebar-portrait.png" width="200" alt="Sidebar"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/rank-portrait.png" width="200" alt="Rank"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/achievement-portrait.png" width="200" alt="Achievements"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/reward-portrait.png" width="200" alt="Rewards"></td>
+      <td style="border: none;"><img src="/publicassets/img/in-app-screenshot/sidebar-portrait.png" width="200" alt="Sidebar"></td>
     </tr>
   </table>
 </div>
@@ -54,11 +54,5 @@
 ### Getting Started
 
 1. **Clone the repository** to your local machine.
-2. Open `login.html` in any modern browser to start locally.
-3. **Download the APK** from the [Releases](https://github.com/keinndh/quest-log-mobile/releases) section for the full mobile experience.
-4. Register your hero and begin your epic journey!
-
----
-<div align="center">
-  Created with love by the Quest Log Team
-</div>
+2. **Download the APK** from the [Releases](https://github.com/keinndh/quest-log-mobile/releases) section for the full mobile experience.
+3. Register your hero and begin your epic journey!
