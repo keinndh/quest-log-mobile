@@ -184,7 +184,7 @@ function renderWeaponShop(playerGold, player) {
             rowHtml += `
                 <div class="shop-item pixel-card" style="${cardStyle} ${itemStyle}">
                     <div style="height:${containerHeight}; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
-                        <img src="../assets/weapon/${r.id}/${weapon.file}" class="float-anim" style="${imgStyle}" alt="${weapon.name}">
+                        <img src="./assets/weapon/${r.id}/${weapon.file}" class="float-anim" style="${imgStyle}" alt="${weapon.name}">
                     </div>
                     <div style="font-size:6px; color:var(--gold); margin-bottom:6px; min-height:18px; line-height:1.2;">${weapon.name.toUpperCase()}</div>
                     ${statusHtml}
@@ -264,4 +264,5 @@ function showToast(icon, title, desc) {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 4000);
 }
+
 
