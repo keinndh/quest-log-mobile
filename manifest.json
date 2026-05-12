@@ -6,8 +6,8 @@
   "start_url": "https://keinndh.github.io/quest-log-mobile/index.html",
   "scope": "https://keinndh.github.io/quest-log-mobile/",
   "display": "standalone",
-  "background_color": "#0d0015",
-  "theme_color": "#0d0015",
+  "background_color": "#1c0031",
+  "theme_color": "#1c0031",
   "orientation": "portrait",
   "categories": ["productivity", "games", "lifestyle"],
   "icons": [
