@@ -62,4 +62,22 @@ $(document).ready(function() {
     function showError(msg) {
         $("#auth-message").text("⚠️ " + msg).fadeIn();
     }
+
+    async function forgotPassword() {
+        const email = $("#login-email").val();
+        if (!email) {
+            showError("Enter your email address first, Hero!");
+            return;
+        }
+
+        if (confirm(`⚔️ Send a recovery scroll to ${email}?`)) {
+            const res = await cloudSync.resetPassword(email);
+            if (res.status === 'success') {
+                alert("📜 " + res.message);
+            } else {
+                showError(res.message);
+            }
+        }
+    }
+    window.forgotPassword = forgotPassword;
 });

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, deleteUser } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, deleteUser, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
@@ -44,6 +44,15 @@ export const cloudSync = {
             }
 
             return { status: 'success', userId: userCredential.user.uid };
+        } catch (error) {
+            return { status: 'error', message: error.message };
+        }
+    },
+
+    async resetPassword(email) {
+        try {
+            await sendPasswordResetEmail(auth, email);
+            return { status: 'success', message: 'Recovery scroll sent! Check your inbox for the reset link.' };
         } catch (error) {
             return { status: 'error', message: error.message };
         }
