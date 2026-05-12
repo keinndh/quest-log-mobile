@@ -244,8 +244,8 @@ function injectSidebar() {
     const isRoot = !path.includes('/pages/');
     
     // Paths to navigate correctly between root and pages/
-    const toRoot = isRoot ? '' : '../';
-    const toPages = isRoot ? 'pages/' : '';
+    const toRoot = '';
+    const toPages = '';
 
     const sidebarHtml = `
         <div class="sidebar-overlay"></div>
@@ -343,3 +343,4 @@ $(document).on("click", "a", function(e) {
         window.location.href = href;
     }, 250);
 });
+
