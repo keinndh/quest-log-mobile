@@ -119,7 +119,7 @@ function renderWeaponShop(playerGold, player) {
             'uncommon': {name:'Code', file:'Trickster_Code.png'},
             'rare': {name:'Cloak of Deception', file:'Trickster_Cloak_of_Deception.png'},
             'epic': {name:'Fate Bounded', file:'Trickster_Fate_Bounded.png'},
-            'legendary': {name:'Nightstalker\\'s Crown', file:'Trickster_Nightstalker\\'s_Crown.png'},
+            'legendary': {name:'Nightstalker Crown', file:'Trickster_Nightstalker_Crown.png'},
             'mythic': {name:'Curse of the End', file:'Trickster_Curse_of_the_End.png'}
         }
     };
@@ -264,6 +264,7 @@ function showToast(icon, title, desc) {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 4000);
 }
+
 
 
 
