@@ -125,12 +125,12 @@
         <div id="reward-fields" style="display:none; padding-left: 26px;">
           <div class="grid-2" style="gap:20px;">
             <div>
-              <label class="pixel-label">REWARD COST (GOLD)</label>
-              <input type="number" id="reward-cost" class="pixel-input" value="100" min="1">
+              <label class="pixel-label">REWARD COST (GOLD, 0-5)</label>
+              <input type="number" id="reward-cost" class="pixel-input" value="0" min="0" max="5">
             </div>
             <div>
               <label class="pixel-label">REWARD ICON</label>
-              <select id="reward-icon" class="pixel-select pixel-input">
+              <select id="reward-icon" class="pixel-select pixel-input" onchange="toggleSpecifyIcon(this)">
                 <option value="🎁">🎁 Box</option>
                 <option value="🍕">🍕 Food</option>
                 <option value="🎮">🎮 Game</option>

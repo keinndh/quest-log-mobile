@@ -356,6 +356,12 @@ export const db = {
         let quests = this.getQuests();
         quests = quests.filter(q => q.id != id);
         this.save(DB_KEYS.QUESTS, quests);
+
+        // Auto-delete any linked reward
+        let rewards = this.getRewards();
+        rewards = rewards.filter(r => r.quest_id != id);
+        this.save(DB_KEYS.REWARDS, rewards);
+
         return { status: 'success' };
     },
 
@@ -364,6 +370,7 @@ export const db = {
         const index = quests.findIndex(q => q.id == id);
         if (index !== -1 && !quests[index].completed) {
             quests[index].completed = true;
+            quests[index].completed_at = new Date().toISOString();
             this.save(DB_KEYS.QUESTS, quests);
             
             // Reward the player
@@ -399,6 +406,15 @@ export const db = {
             }
             
             this.save(DB_KEYS.PLAYER, player);
+
+            // Auto-unlock any linked reward
+            const rewards = this.getRewards();
+            const rewardIdx = rewards.findIndex(r => r.quest_id == id);
+            if (rewardIdx !== -1) {
+                rewards[rewardIdx].unlocked = true;
+                this.save(DB_KEYS.REWARDS, rewards);
+            }
+
             this.triggerSync();
             return { 
                 status: 'success', 
@@ -416,16 +432,27 @@ export const db = {
         return this.get(DB_KEYS.REWARDS, []);
     },
 
+    getActiveRewards() {
+        return this.getRewards().filter(r => !r.redeemed);
+    },
+
+    getRedeemedRewards() {
+        return this.getRewards().filter(r => r.redeemed).sort((a, b) => new Date(b.redeemed_at) - new Date(a.redeemed_at));
+    },
+
     addReward(data) {
         const rewards = this.getRewards();
+        const cost = Math.max(0, Math.min(5, parseInt(data.cost) || 0));
         const newReward = {
             id: Date.now(),
+            quest_id: data.quest_id || null,
             title: data.title,
-            cost: parseInt(data.cost) || 100,
+            cost: cost,
             icon: data.icon || '🎁',
             description: data.description || '',
             unlocked: false,
-            redeemed_count: 0,
+            redeemed: false,
+            redeemed_at: null,
             created_at: new Date().toISOString()
         };
         rewards.push(newReward);
@@ -447,10 +474,16 @@ export const db = {
 
         if (index !== -1) {
             const reward = rewards[index];
+            if (!reward.unlocked) {
+                return { status: 'error', message: 'Reward is still locked! Complete the quest first.' };
+            }
+            if (reward.redeemed) {
+                return { status: 'error', message: 'Reward already redeemed!' };
+            }
             if (player.gold >= reward.cost) {
                 player.gold -= reward.cost;
-                reward.unlocked = true; // Mark as "bought"
-                reward.redeemed_count = (reward.redeemed_count || 0) + 1;
+                reward.redeemed = true;
+                reward.redeemed_at = new Date().toISOString();
                 
                 if (typeof window.playCoin === 'function') window.playCoin();
                 this.save(DB_KEYS.REWARDS, rewards);
