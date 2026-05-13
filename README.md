@@ -6,7 +6,7 @@
   **Turn your daily tasks into a pixel-art RPG adventure. A free and open-source gamified productivity app for Android. Enter the app online once to cache your assets, and your adventure continues fully offline.**
 
 ![Android 6.0+](https://img.shields.io/badge/android-6.0+-brightgreen)
-[![License](https://img.shields.io/github/license/keinndh/quest-log-mobile)](https://github.com/keinndh/quest-log-mobile/blob/main/LICENSE.md)
+[![License](https://img.shields.io/github/license/keinndh/quest-log-mobile)](https://github.com/keinndh/quest-log-mobile/blob/main/LICENSE)
 ![Status](https://img.shields.io/badge/status-active-blue)
 
 [Download the latest APK](https://github.com/keinndh/quest-log-mobile/releases/latest)
