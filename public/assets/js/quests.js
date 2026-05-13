@@ -83,8 +83,14 @@ $(document).ready(function() {
 
         // Reward data
         let withReward = $("#add-with-reward").is(":checked");
-        let rewardCost = $("#reward-cost").val();
+        let rewardCost = Math.max(0, Math.min(5, parseInt($("#reward-cost").val()) || 0));
         let rewardIcon = $("#reward-icon").val();
+        let rewardDesc = $("#reward-desc").val() || '';
+
+        // Handle "Specify" custom icon
+        if (rewardIcon === 'specify') {
+            rewardIcon = $("#custom-icon-emoji").val() || '🎁';
+        }
 
         let res;
         if (id) {
@@ -114,11 +120,13 @@ $(document).ready(function() {
             
             // If creating with reward and it's a NEW quest
             if(withReward && !id) {
+                const newQuestId = res.quest ? res.quest.id : null;
                 const rewardRes = window.db.addReward({
+                    quest_id: newQuestId,
                     title: title,
                     cost: rewardCost,
                     icon: rewardIcon,
-                    description: "Reward for completing: " + title
+                    description: rewardDesc || "Reward for completing: " + title
                 });
                 if(rewardRes.status === 'success') {
                     msg += " (🎁 Reward Created!)";
@@ -244,6 +252,7 @@ $(document).ready(function() {
     window.toggleAdd = toggleAdd;
     window.showQuestDetails = showQuestDetails;
     window.completeQuestFromModal = completeQuestFromModal;
+    window.toggleSpecifyIcon = toggleSpecifyIcon;
 
 });
 
@@ -259,6 +268,14 @@ function toggleAdd() {
         $("#edit-id").val('');
     }
     $("#add-panel").slideToggle();
+}
+
+function toggleSpecifyIcon(selectEl) {
+    if ($(selectEl).val() === 'specify') {
+        $("#specify-icon-fields").slideDown();
+    } else {
+        $("#specify-icon-fields").slideUp();
+    }
 }
 
 function showMessage(type, text) {

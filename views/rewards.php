@@ -1,5 +1,5 @@
 <?php 
-  $title = "QUEST LOG � REWARDS";
+  $title = "QUEST LOG � REWARDS";
   include '../includes/header.php';
 ?>
 <style>
@@ -44,9 +44,9 @@
   <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;">
     <div>
       <h1 class="pixel-title">🎁 REWARDS</h1>
-      <p class="pixel-subtitle">Create and redeem your own custom rewards</p>
+      <p class="pixel-subtitle">Complete quests to unlock rewards</p>
     </div>
-    <button class="btn-pixel btn-pixel-gold" onclick="$('#add-reward-modal').fadeIn()">➕ NEW REWARD</button>
+    <button class="btn-pixel btn-pixel-gold" onclick="$('#add-reward-modal').fadeIn()">➕ HISTORY</button>
   </div>
 
   <div id="system-message" class="pixel-panel" style="display:none;margin-bottom:20px;">
@@ -61,34 +61,16 @@
   </div>
 </div>
 
-<!-- ADD REWARD MODAL -->
-<div id="add-reward-modal" class="pixel-modal" style="display:none;">
-  <div class="pixel-panel" style="max-width:500px;margin:10% auto;position:relative;">
-    <h2 class="pixel-title" style="font-size:14px;margin-bottom:20px;">🎁 CREATE REWARD</h2>
-    <form id="add-reward-form">
-      <div style="margin-bottom:16px;">
-        <label class="pixel-label">REWARD NAME *</label>
-        <input type="text" id="reward-title" class="pixel-input" placeholder="e.g. 1 Hour of Gaming" required>
-      </div>
-      <div class="grid-2" style="gap:20px;margin-bottom:16px;">
-        <div>
-          <label class="pixel-label">GOLD COST *</label>
-          <input type="number" id="reward-cost" class="pixel-input" value="100" min="1" required>
-        </div>
-        <div>
-          <label class="pixel-label">ICON</label>
-          <select id="reward-icon" class="pixel-select pixel-input">
-            <option value="🎁">🎁 Box</option>
-            <option value="🍕">🍕 Food</option>
-            <option value="🎮">🎮 Game</option>
-            <option value="🎬">🎬 Movie</option>
-            <option value="😴">😴 Sleep</option>
-            <option value="🍦">🍦 Treat</option>
-            <option value="🎟️">🎟️ Ticket</option>
-            <option value="💖">💖 Favor</option>
-          </select>
-        </div>
-      </div>
+<!-- REWARD HISTORY MODAL -->
+<div id="reward-history-modal" class="pixel-modal" style="display:none;">
+  <div class="pixel-panel" style="max-width:500px;margin:8% auto;position:relative;border-width:4px;">
+    <button onclick="$('#reward-history-modal').fadeOut()" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px;">&#x2716;</button>
+    <h2 class="pixel-title" style="font-size:14px;margin-bottom:20px;">&#x1F4DC; REWARD HISTORY</h2>
+    <div id="reward-history-content">
+      <div style="text-align:center;padding:40px;color:var(--text-dim);font-family:'VT323';font-size:20px;">Loading...</div>
+    </div>
+  </div>
+</div>
       <div style="margin-bottom:20px;">
         <label class="pixel-label">DESCRIPTION (OPTIONAL)</label>
         <textarea id="reward-desc" class="pixel-textarea pixel-input" rows="2" placeholder="Describe the reward..."></textarea>
