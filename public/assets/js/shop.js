@@ -64,65 +64,63 @@ function renderWeaponShop(playerGold, player) {
 
     const weaponMap = {
         'Swordsman': {
-            'uncommon': {name:'Caliburn', file:'Warrior_Caliburn.webp'},
-            'rare': {name:'Crystal Crabs Katana', file:'Warrior_Crystal_Crabs_Katana.webp'},
-            'epic': {name:'Thunder Sword', file:'Warrior_Thunder_Sword.webp'},
-            'legendary': {name:'Oathkeeper', file:'Warrior_Oathkeeper.webp'},
-            'mythic': {name:'Dragon Slayer', file:'Warrior_Dragon_Slayer.webp'},
-            'divine': {name:'Against the Gods : Heaven Punishing Ancestral Sword', file:'Warrior, Paladin_Against_the_Gods - Heaven_Punishing_Ancestral_Sword.png'}
+            'uncommon': {name:'Grand Knight Sword', file:'Swordsman_Grand_Knight_Sword.png'},
+            'rare': {name:'Crystal Sword', file:'Swordsman_Crystal_Sword.png'},
+            'epic': {name:'Wrath of the Sky', file:'Swordsman_Wrath_of_the_Sky.png'},
+            'legendary': {name:'Slayer of the Nine Skies', file:'Swordsman_Slayer_of_the_Nine_Skies.png'},
+            'mythic': {name:'Spatial Severance', file:'Swordsman_Spatial_Severance.png'},
+            'divine': {name:'Genesis: Glaive of the Primordial Divine', file:'Swordsman_Genesis - Glaive of the Primordial Divine.png'}
         },
         'Paladin': {
-            'uncommon': {name:'Grand Knight Sword', file:'Paladin_Grand_Knight_Sword.webp'},
-            'rare': {name:'Sword of King Hero', file:'Paladin_Sword_of_King_Hero.webp'},
-            'epic': {name:'Shield', file:'Paladin_Shield.webp'},
-            'legendary': {name:'Deep Dark Blade', file:'Paladin_Deep_Dark_Blade.webp'},
-            'mythic': {name:'Demon Slayer', file:'Paladin_Demon_Slayer.webp'},
-            'divine': {name:'Against the Gods : Heaven Punishing Ancestral Sword', file:'Warrior, Paladin_Against_the_Gods - Heaven_Punishing_Ancestral_Sword.png'}
+            'uncommon': {name:'Sage of Light', file:'Paladin_Sage_of_Light.png'},
+            'rare': {name:'Emblem', file:'Paladin_Emblem.png'},
+            'epic': {name:'Holy Shield', file:'Paladin_Holy_Shield.png'},
+            'legendary': {name:'Demon Slayer', file:'Paladin_Inheritance_of_the_Dark_King - Demon_Slayer.png'},
+            'mythic': {name:'Celestial', file:'Paladin_Celestial.png'}
         },
         'Mage': {
-            'uncommon': {name:'Staff of Frost', file:'Mage_Staff_of_Frost.webp'},
-            'rare': {name:'Staff of Wizard', file:'Mage_Staff_of_Wizard.webp'},
-            'epic': {name:'Staff of Illusion', file:'Mage_Staff_of_Illusion.webp'},
-            'legendary': {name:'Cyan Dragon Staff', file:'Mage_Cyan_Dragon_Staff.webp'},
-            'mythic': {name:'Staff of Incantation', file:'Mage_Staff_of_Incantation.webp'},
-            'divine': {name:'Warlock Staff', file:'Mage, Sage_Warlock_Staff.webp'}
+            'uncommon': {name:'Frost Wand', file:'Mage_Frost_Wand.png'},
+            'rare': {name:'War Magic', file:'Mage_War_Magic.png'},
+            'epic': {name:'Ember Staff', file:'Mage_Ember_Staff.png'},
+            'legendary': {name:'Origin of Jade', file:'Mage_Origin_of_Jade.png'},
+            'mythic': {name:'Conqueror of the Cosmic', file:'Mage_Conqueror_of_the_Cosmic.png'},
+            'divine': {name:'Astras of Eternity', file:'Mage_Astras_of_Eternity.png'}
         },
         'Sage': {
-            'uncommon': {name:'Gold Staff', file:'Sage_Gold_Staff.webp'},
-            'rare': {name:'Staff of Light', file:'Sage_Staff_of_Light.webp'},
-            'epic': {name:'Golden Cross', file:'Sage_Golden_Cross.webp'},
-            'legendary': {name:'Staff of Anubis', file:'Sage_Staff_of_Anubis.webp'},
-            'mythic': {name:'Tome of Light', file:'Sage_Tome_of_Light.webp'},
-            'divine': {name:'Warlock Staff', file:'Mage, Sage_Warlock_Staff.webp'}
+            'uncommon': {name:'Golden Staff', file:'Sage_Golden_Staff.png'},
+            'rare': {name:'Staff of Light', file:'Sage_Staff_of_Light.png'},
+            'epic': {name:'Saint Cross', file:'Sage_Saint_Cross.png'},
+            'legendary': {name:'Underworld', file:'Sage_Underworld.png'},
+            'mythic': {name:'Tome of the Holy One', file:'Sage_Tome_of_the_Holy_One.png'}
         },
         'Ranger': {
-            'uncommon': {name:'Crystal Bow', file:'Ranger_Crystal_Bow.webp'},
-            'rare': {name:'Ancient Bow', file:'Ranger_Ancient_Bow.webp'},
-            'epic': {name:'Star Bow', file:'Ranger_Star_Bow.webp'},
-            'legendary': {name:'Laser Tempest', file:'Ranger_Laser_Tempest.webp'},
-            'mythic': {name:'Shuddering Thunder', file:'Ranger_Shuddering_Thunder.webp'}, 
-            'divine': {name:'Heaven and Earth Bow', file:'Ranger_Heaven_and_Earth_Bow.webp'}
+            'uncommon': {name:'Elven Bow', file:'Ranger_Elven_Bow.png'},
+            'rare': {name:'Blizzard', file:'Ranger_Blizzard.png'},
+            'epic': {name:'Photon Cyclone', file:'Ranger_Photon_Cyclone.png'},
+            'legendary': {name:'Authority of Lightning', file:'Ranger_Authority_of_Lightning.png'},
+            'mythic': {name:'Meteors', file:'Range_Meteors.png'},
+            'divine': {name:'Transendent Tempest', file:'Ranger_Transcendent_Tempest.png'}
         },
         'Rogue': {
-            'uncommon': {name:'Paper Bomb Kunai', file:'Roude_Paper_Bomb_Kunai.webp'},
-            'rare': {name:'Windforce Ninja Stars', file:'Rogue_Windforce_Ninja_Stars.webp'},
-            'epic': {name:'Electric Ninja Stars', file:'Rogue_Electric_Ninja_Stars.webp'},
-            'legendary': {name:'Bayonet in a Gourd', file:'Rogue_Bayonet_in_a_Gourd.webp'},
-            'mythic': {name:'Whisper of Dark', file:'Rogue_Whisper_of_Dark.webp'}
+            'uncommon': {name:'Sound', file:'Rogue_Sound.png'},
+            'rare': {name:'Whisper of Death', file:'Rogue_Whisper_of_Death.png'},
+            'epic': {name:'Electric Phantom', file:'Rogue_Electric_Phantom.png'},
+            'legendary': {name:'Rain of Mirage', file:'Rogue_Rain_of_Mirage_Void_Tooth.png'},
+            'mythic': {name:'Umbral Shard', file:'Rogue_Umbral Shard.png'}
         },
         'Berserker': {
-            'uncommon': {name:'Meat Grinder', file:'Berserker_Meat_Grinder.webp'},
-            'rare': {name:'Explosive Warhammer', file:'Berserker_Explosive_Warhammer.webp'},
-            'epic': {name:'Flame Battleaxe', file:'Berserker_Flame_Battleaxe.webp'},
-            'legendary': {name:'Frost Battleaxe', file:'Berserker_Frost_Battleaxe.webp'},
-            'mythic': {name:'Storm Battleaxe', file:'Berserker_Storm_Battleaxe.webp'}
+            'uncommon': {name:'Berserk', file:'Berserker_Berserk.png'},
+            'rare': {name:'Dwarven Heirloom', file:'Berserker_Dwarven_Heirloom.png'},
+            'epic': {name:'Axe of Volcanic Age', file:'Berserker_Axe_of_Volcanic_Age.png'},
+            'legendary': {name:'North Vein', file:'Berserker_North_Vein.png'},
+            'mythic': {name:'Asgard Thunder', file:'Berseker_Asgard_Thunder.png'}
         },
         'Trickster': {
-            'uncommon': {name:'The Code', file:'Trickster_The_Code.webp'},
-            'rare': {name:'Fragmented Fel Cloak', file:'Trickster_Fragmented_Fel_Cloak.webp'},
-            'epic': {name:'Five:Color Pen', file:'Trickster_Five-Color_Pen.webp'},
-            'legendary': {name:'Extra Crown', file:'Trickster_Extra_Crown.webp'},
-            'mythic': {name:'Death Note', file:'Trickster_Death_Note.webp'}
+            'uncommon': {name:'Code', file:'Trickster_Code.png'},
+            'rare': {name:'Cloak of Deception', file:'Trickster_Cloak_of_Deception.png'},
+            'epic': {name:'Fate Bounded', file:'Trickster_Fate_Bounded.png'},
+            'legendary': {name:'Nightstalker\\'s Crown', file:'Trickster_Nightstalker\\'s_Crown.png'},
+            'mythic': {name:'Curse of the End', file:'Trickster_Curse_of_the_End.png'}
         }
     };
 
@@ -186,7 +184,7 @@ function renderWeaponShop(playerGold, player) {
             rowHtml += `
                 <div class="shop-item pixel-card" style="${cardStyle} ${itemStyle}">
                     <div style="height:${containerHeight}; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
-                        <img src="../assets/weapon/${r.id}/${weapon.file}" class="float-anim" style="${imgStyle}" alt="${weapon.name}">
+                        <img src="assets/img/weapon/${r.id}/${weapon.file}" class="float-anim" style="${imgStyle}" alt="${weapon.name}">
                     </div>
                     <div style="font-size:6px; color:var(--gold); margin-bottom:6px; min-height:18px; line-height:1.2;">${weapon.name.toUpperCase()}</div>
                     ${statusHtml}
@@ -266,4 +264,5 @@ function showToast(icon, title, desc) {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 4000);
 }
+
 
