@@ -65,61 +65,63 @@ function renderWeaponShop(playerGold, player) {
     const weaponMap = {
         'Swordsman': {
             'uncommon': {name:'Caliburn', file:'Warrior_Caliburn.webp'},
-            'rare': {name:'Crystal Katana', file:'Warrior_Crystal_Crabs_Katana.webp'},
-            'epic': {name:'Sword of Thunder', file:'Warrior_Thunder_Sword.webp'},
+            'rare': {name:'Crystal Crabs Katana', file:'Warrior_Crystal_Crabs_Katana.webp'},
+            'epic': {name:'Thunder Sword', file:'Warrior_Thunder_Sword.webp'},
             'legendary': {name:'Oathkeeper', file:'Warrior_Oathkeeper.webp'},
             'mythic': {name:'Dragon Slayer', file:'Warrior_Dragon_Slayer.webp'},
-            'divine': {name:'Against the Gods - Heaven Punishing Ancestral Sword', file:'Warrior, Paladin_Against_the_Gods - Heaven_Punishing_Ancestral_Sword.png'}
+            'divine': {name:'Against the Gods : Heaven Punishing Ancestral Sword', file:'Warrior, Paladin_Against_the_Gods - Heaven_Punishing_Ancestral_Sword.png'}
         },
         'Paladin': {
             'uncommon': {name:'Grand Knight Sword', file:'Paladin_Grand_Knight_Sword.webp'},
-            'rare': {name:'Sword of the Knight Hero', file:'Paladin_Sword_of_King_Hero.webp'},
-            'epic': {name:'Holy Shield', file:'Paladin_Shield.webp'},
-            'legendary': {name:'Darkness Vanquishing Blade', file:'Paladin_Deep_Dark_Blade.webp'},
-            'mythic': {name:'Demon Slayer', file:'Paladin_Demon_Slayer.webp'}
+            'rare': {name:'Sword of King Hero', file:'Paladin_Sword_of_King_Hero.webp'},
+            'epic': {name:'Shield', file:'Paladin_Shield.webp'},
+            'legendary': {name:'Deep Dark Blade', file:'Paladin_Deep_Dark_Blade.webp'},
+            'mythic': {name:'Demon Slayer', file:'Paladin_Demon_Slayer.webp'},
+            'divine': {name:'Against the Gods : Heaven Punishing Ancestral Sword', file:'Warrior, Paladin_Against_the_Gods - Heaven_Punishing_Ancestral_Sword.png'}
         },
         'Mage': {
             'uncommon': {name:'Staff of Frost', file:'Mage_Staff_of_Frost.webp'},
-            'rare': {name:'Staff of Wand', file:'Mage_Staff_of_Wizard.webp'},
+            'rare': {name:'Staff of Wizard', file:'Mage_Staff_of_Wizard.webp'},
             'epic': {name:'Staff of Illusion', file:'Mage_Staff_of_Illusion.webp'},
-            'legendary': {name:'Dragon Staff', file:'Mage_Cyan_Dragon_Staff.webp'},
-            'mythic': {name:'Incantation Staff', file:'Mage_Staff_of_Incantation.webp'},
-            'divine': {name:'Celestial Staff', file:'Mage, Sage_Warlock_Staff.webp'}
+            'legendary': {name:'Cyan Dragon Staff', file:'Mage_Cyan_Dragon_Staff.webp'},
+            'mythic': {name:'Staff of Incantation', file:'Mage_Staff_of_Incantation.webp'},
+            'divine': {name:'Warlock Staff', file:'Mage, Sage_Warlock_Staff.webp'}
         },
         'Sage': {
             'uncommon': {name:'Gold Staff', file:'Sage_Gold_Staff.webp'},
             'rare': {name:'Staff of Light', file:'Sage_Staff_of_Light.webp'},
             'epic': {name:'Golden Cross', file:'Sage_Golden_Cross.webp'},
             'legendary': {name:'Staff of Anubis', file:'Sage_Staff_of_Anubis.webp'},
-            'mythic': {name:'Eternity Book', file:'Sage_Tome_of_Light.webp'}
+            'mythic': {name:'Tome of Light', file:'Sage_Tome_of_Light.webp'},
+            'divine': {name:'Warlock Staff', file:'Mage, Sage_Warlock_Staff.webp'}
         },
         'Ranger': {
             'uncommon': {name:'Crystal Bow', file:'Ranger_Crystal_Bow.webp'},
-            'rare': {name:'Elven Bow', file:'Ranger_Ancient_Bow.webp'},
+            'rare': {name:'Ancient Bow', file:'Ranger_Ancient_Bow.webp'},
             'epic': {name:'Star Bow', file:'Ranger_Star_Bow.webp'},
             'legendary': {name:'Laser Tempest', file:'Ranger_Laser_Tempest.webp'},
-            'mythic': {name:'Heavenly Bow', file:'Ranger_Shuddering_Thunder.webp'}, 
+            'mythic': {name:'Shuddering Thunder', file:'Ranger_Shuddering_Thunder.webp'}, 
             'divine': {name:'Heaven and Earth Bow', file:'Ranger_Heaven_and_Earth_Bow.webp'}
         },
         'Rogue': {
-            'uncommon': {name:'Flame Bomb Kunai', file:'Roude_Paper_Bomb_Kunai.webp'},
-            'rare': {name:'Windforce Ninja Star', file:'Rogue_Windforce_Ninja_Stars.webp'},
+            'uncommon': {name:'Paper Bomb Kunai', file:'Roude_Paper_Bomb_Kunai.webp'},
+            'rare': {name:'Windforce Ninja Stars', file:'Rogue_Windforce_Ninja_Stars.webp'},
             'epic': {name:'Electric Ninja Stars', file:'Rogue_Electric_Ninja_Stars.webp'},
-            'legendary': {name:'1000 Degree Knife', file:'Rogue_Bayonet_in_a_Gourd.webp'},
-            'mythic': {name:'Whisper of the Dark', file:'Rogue_Whisper_of_Dark.webp'}
+            'legendary': {name:'Bayonet in a Gourd', file:'Rogue_Bayonet_in_a_Gourd.webp'},
+            'mythic': {name:'Whisper of Dark', file:'Rogue_Whisper_of_Dark.webp'}
         },
         'Berserker': {
             'uncommon': {name:'Meat Grinder', file:'Berserker_Meat_Grinder.webp'},
             'rare': {name:'Explosive Warhammer', file:'Berserker_Explosive_Warhammer.webp'},
             'epic': {name:'Flame Battleaxe', file:'Berserker_Flame_Battleaxe.webp'},
-            'legendary': {name:'Blizzard', file:'Berserker_Frost_Battleaxe.webp'},
-            'mythic': {name:'World Breaker', file:'Berserker_Storm_Battleaxe.webp'}
+            'legendary': {name:'Frost Battleaxe', file:'Berserker_Frost_Battleaxe.webp'},
+            'mythic': {name:'Storm Battleaxe', file:'Berserker_Storm_Battleaxe.webp'}
         },
         'Trickster': {
             'uncommon': {name:'The Code', file:'Trickster_The_Code.webp'},
-            'rare': {name:'Joker Card', file:'Trickster_Fragmented_Fel_Cloak.webp'},
-            'epic': {name:'Five-Color Pen', file:'Trickster_Five-Color_Pen.webp'},
-            'legendary': {name:'Crown of Truth', file:'Trickster_Extra_Crown.webp'},
+            'rare': {name:'Fragmented Fel Cloak', file:'Trickster_Fragmented_Fel_Cloak.webp'},
+            'epic': {name:'Five:Color Pen', file:'Trickster_Five-Color_Pen.webp'},
+            'legendary': {name:'Extra Crown', file:'Trickster_Extra_Crown.webp'},
             'mythic': {name:'Death Note', file:'Trickster_Death_Note.webp'}
         }
     };
