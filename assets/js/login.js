@@ -1,6 +1,12 @@
 import { cloudSync } from './firebase.js';
 
 $(document).ready(function() {
+    // REDIRECT IF ALREADY LOGGED IN
+    if (localStorage.getItem('ql_user_id')) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+
     // LOGIN
     $("#login-form").on("submit", async function(e) {
         e.preventDefault();

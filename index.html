@@ -10,6 +10,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/pixel.css">
 <link rel="manifest" href="manifest.json">
+<script>
+  // IMMEDIATE REDIRECT IF LOGGED IN
+  if (localStorage.getItem('ql_user_id')) {
+    window.location.href = 'dashboard.html';
+  }
+</script>
 <style>
   body {
     background: var(--purple-deep);
