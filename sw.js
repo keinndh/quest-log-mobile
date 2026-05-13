@@ -29,7 +29,7 @@ self.addEventListener('install', (event) => {
         './assets/js/quests.js',
         './assets/js/login.js',
         './assets/js/firebase.js',
-        './assets/img/pixel art GIF.gif'
+        './assets/img/bg.gif'
       ]);
     })
   );

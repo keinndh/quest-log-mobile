@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QUEST LOG — LOGIN</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
 <meta name="description" content="A Hero's Offline Productivity System. Log in to track your epic journey.">
 <meta name="theme-color" content="#0d0015">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +34,7 @@
     content: '';
     position: fixed;
     inset: 0;
-    background: linear-gradient(rgba(13, 0, 21, 0.5), rgba(13, 0, 21, 0.7)), url('assets/img/pixel art GIF.gif');
+    background: linear-gradient(rgba(13, 0, 21, 0.5), rgba(13, 0, 21, 0.7)), url('assets/img/bg.gif');
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -88,10 +89,36 @@
     .login-logo { font-size: 48px; }
     .login-title { font-size: 20px; }
   }
+
+  .inbox-bell {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(13,0,33,0.8);
+    border: 2px solid var(--gold-dark);
+    color: var(--gold);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 100;
+    transition: all 0.1s steps(1);
+  }
+  .inbox-bell:hover {
+    border-color: var(--gold);
+    transform: scale(1.1);
+  }
 </style>
 </head>
 <body>
 <div class="scanlines"></div>
+
+<div class="inbox-bell" onclick="alert('📢 SYSTEM UPDATES:\n- Cloud Sync is now active!\n- Offline usage improved.\n- Server status: UP.')" title="System Inbox">
+  🔔
+</div>
 
 <div class="login-card">
   <div class="login-logo">⚔️</div>
