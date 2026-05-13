@@ -1,4 +1,16 @@
 <?php
+// Persistent session: 30 days
+$lifetime = 30 * 24 * 60 * 60;
+ini_set('session.gc_maxlifetime', $lifetime);
+ini_set('session.cookie_lifetime', $lifetime);
+session_set_cookie_params([
+    'lifetime' => $lifetime,
+    'path' => '/',
+    'domain' => '',
+    'secure' => false, // Set to true if using HTTPS
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 
 // Generate CSRF token if not exists

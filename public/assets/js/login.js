@@ -1,4 +1,10 @@
 $(document).ready(function() {
+    // REDIRECT IF ALREADY LOGGED IN
+    if (localStorage.getItem('ql_user_id') && (window.location.search.includes('page=login') || window.location.search === '')) {
+        window.location.href = '?page=dashboard';
+        return;
+    }
+
     // LOGIN
     $("#login-form").on("submit", function(e) {
         e.preventDefault();
@@ -16,6 +22,8 @@ $(document).ready(function() {
             password: password
         }, function(res) {
             if (res.status === 'success') {
+                // Save user info for "remember me" logic
+                localStorage.setItem('ql_user_id', username); // Using username as ID for PHP version
                 window.location.href = '?page=dashboard';
             } else {
                 showError(res.message);
