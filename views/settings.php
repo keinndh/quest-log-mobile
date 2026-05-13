@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
   $title = "QUEST LOG � SETTINGS";
   include '../includes/header.php';
 ?>
@@ -52,16 +52,20 @@
 
   <!-- Account Info -->
   <div class="settings-section">
-    <h3 class="pixel-title">👤 ACCOUNT OVERVIEW</h3>
+    <h3 class="pixel-title">👤 ACCOUNT</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px;" id="account-info-grid">
       <!-- injected by js -->
     </div>
-    <div style="margin-top:20px; border-top:1px solid rgba(255,215,0,0.1); padding-top:20px;">
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button onclick="forceSync()" class="btn-pixel btn-pixel-purple" style="flex: 1; min-width: 200px;">☁️ UPLOAD TO CLOUD</button>
-            <button onclick="retrieveSync()" class="btn-pixel btn-pixel-outline" style="flex: 1; min-width: 200px;">🔄 RETRIEVE FROM CLOUD</button>
-        </div>
-        <p style="font-family:'VT323';font-size:14px;color:var(--text-dim);margin-top:10px;">Manually sync your data and retrieve ir with the cloud.</p>
+  </div>
+
+  <!-- Cloud Sync -->
+  <div class="settings-section">
+    <h3 class="pixel-title">☁️ CLOUD SYNC</h3>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button onclick="forceSync()" class="btn-pixel btn-pixel-purple" style="flex: 1; min-width: 200px;">☁️ UPLOAD TO CLOUD</button>
+        <button onclick="retrieveSync()" class="btn-pixel btn-pixel-outline" style="flex: 1; min-width: 200px;">🔄 RETRIEVE FROM CLOUD</button>
+    </div>
+    <p style="font-family:'VT323';font-size:14px;color:var(--text-dim);margin-top:10px;">Manually sync your data and retrieve it from the cloud.</p>
   </div>
  
   <!-- Login Credentials -->
