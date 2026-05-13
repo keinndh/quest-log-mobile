@@ -58,10 +58,10 @@
     </div>
     <div style="margin-top:20px; border-top:1px solid rgba(255,215,0,0.1); padding-top:20px;">
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button onclick="forceSync()" class="btn-pixel btn-pixel-purple" style="flex: 1; min-width: 200px;">☁️ FORCE CLOUD SYNC</button>
-            <button onclick="retrieveSync()" class="btn-pixel btn-pixel-outline" style="flex: 1; min-width: 200px;">🔄 RETRIEVE SYNC DATA</button>
+            <button onclick="forceSync()" class="btn-pixel btn-pixel-purple" style="flex: 1; min-width: 200px;">☁️ UPLOAD TO CLOUD</button>
+            <button onclick="retrieveSync()" class="btn-pixel btn-pixel-outline" style="flex: 1; min-width: 200px;">🔄 RETRIEVE FROM CLOUD</button>
         </div>
-        <p style="font-family:'VT323';font-size:14px;color:var(--text-dim);margin-top:10px;">Manually sync your data with the cloud.</p>
+        <p style="font-family:'VT323';font-size:14px;color:var(--text-dim);margin-top:10px;">Manually sync your data and retrieve ir with the cloud.</p>
   </div>
  
   <!-- Login Credentials -->

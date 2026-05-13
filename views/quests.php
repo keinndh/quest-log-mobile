@@ -125,7 +125,6 @@
             <div>
               <label class="pixel-label">REWARD ICON</label>
               <select id="reward-icon" class="pixel-select pixel-input" onchange="toggleSpecifyIcon(this)">
-                <option value="🎁">🎁 Box</option>
                 <option value="🍕">🍕 Food</option>
                 <option value="🎮">🎮 Game</option>
                 <option value="🎬">🎬 Movie</option>
