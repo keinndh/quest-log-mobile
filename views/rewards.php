@@ -45,7 +45,7 @@
     <h1 class="pixel-title">🎁 REWARDS</h1>
     <p class="pixel-subtitle">Complete quests to unlock rewards</p>
   </div>
-  <button class="btn-pixel btn-pixel-purple" onclick="openRewardHistory()" style="width: 100%; margin-bottom: 32px; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 14px;">
+  <button class="btn-pixel btn-pixel-purple" onclick="openRewardHistory()" style="width: 100%; margin-bottom: 32px; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 10px;">
     📜 VIEW REWARD HISTORY
   </button>
   <div id="system-message" class="pixel-panel" style="display:none;margin-bottom:20px;">
