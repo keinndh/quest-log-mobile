@@ -132,7 +132,7 @@ export const db = {
         const p = this.get(DB_KEYS.PLAYER);
         
         // CLASS SWITCHING LOCK LOGIC
-        if (data.class && data.class !== p.class) {
+        if (data.class && data.class !== p.class && p.class_locked == 1) {
             // Check Achievements
             const achs = this.get(DB_KEYS.ACHIEVEMENTS, INITIAL_ACHIEVEMENTS);
             const allUnlocked = achs.every(a => a.unlocked);
@@ -697,3 +697,4 @@ export const db = {
 
 // Auto-init
 db.init();
+

@@ -1,52 +1,81 @@
-// This is the "Offline page" service worker
+// Quest Log Service Worker
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js');
 
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
+const CACHE_NAME = 'quest-log-v5';
+const OFFLINE_URL = 'index.html';
 
-const CACHE = "pwabuilder-page-v4";
-
-// The offline fallback page is our main Single Page App entry point
-const offlineFallbackPage = "index.html";
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
-
-self.addEventListener('install', async (event) => {
+// Cache all pages and assets on install
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => {
-          // Add core assets to ensure the fallback page looks right
-          cache.add('assets/css/pixel.css');
-          cache.add('assets/js/pixel.js');
-          return cache.add(offlineFallbackPage);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll([
+        './',
+        './index.html',
+        './dashboard.html',
+        './quests.html',
+        './character.html',
+        './achievements.html',
+        './shop.html',
+        './stats.html',
+        './leaderboard.html',
+        './daily-log.html',
+        './settings.html',
+        './user_rewards.html',
+        './manifest.json',
+        './assets/css/pixel.css',
+        './assets/js/pixel.js',
+        './assets/js/db.js',
+        './assets/js/dashboard.js',
+        './assets/js/quests.js',
+        './assets/js/login.js',
+        './assets/js/firebase.js',
+        './assets/img/pixel art GIF.gif'
+      ]);
+    })
   );
 });
 
-if (workbox.navigationPreload.isSupported()) {
-  workbox.navigationPreload.enable();
-}
+// Clean up old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
 
+// Cache-first strategy for assets, Network-first for HTML
+workbox.routing.registerRoute(
+  ({request}) => request.destination === 'script' || request.destination === 'style' || request.request.destination === 'image',
+  new workbox.strategies.CacheFirst({
+    cacheName: 'assets-cache',
+  })
+);
+
+// Fonts caching
+workbox.routing.registerRoute(
+  ({url}) => url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com',
+  new workbox.strategies.CacheFirst({
+    cacheName: 'google-fonts',
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({maxEntries: 20}),
+    ],
+  })
+);
+
+// Fallback to index.html for navigation errors (offline)
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
-    event.respondWith((async () => {
-      try {
-        const preloadResp = await event.preloadResponse;
-
-        if (preloadResp) {
-          return preloadResp;
-        }
-
-        const networkResp = await fetch(event.request);
-        return networkResp;
-      } catch (error) {
-
-        const cache = await caches.open(CACHE);
-        const cachedResp = await cache.match(offlineFallbackPage);
-        return cachedResp;
-      }
-    })());
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match(OFFLINE_URL);
+      })
+    );
   }
 });
