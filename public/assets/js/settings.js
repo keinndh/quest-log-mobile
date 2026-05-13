@@ -33,6 +33,19 @@ async function forceSync() {
 }
 window.forceSync = forceSync;
 
+async function retrieveSync() {
+    if(!confirm("⚠️ This will overwrite your CURRENT local data with the data from the cloud. Are you sure?")) return;
+    
+    showMessage('success', "Retrieving cloud data...");
+    const res = await window.db.retrieveSync();
+    showMessage(res.status, res.message);
+    
+    if (res.status === 'success') {
+        setTimeout(() => window.location.reload(), 2000);
+    }
+}
+window.retrieveSync = retrieveSync;
+
 function resetProgress() {
     if(confirm('⚠️ WARNING: This will DELETE ALL your quests and RESET your character! Are you absolutely sure?')) {
         const res = window.db.resetProgress();

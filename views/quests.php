@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
   $title = "QUEST LOG — QUEST BOARD";
   include '../includes/header.php';
 ?>
@@ -119,19 +119,39 @@
         <div id="reward-fields" style="display:none; padding-left: 26px;">
           <div class="grid-2" style="gap:20px;">
             <div>
-              <label class="pixel-label">REWARD COST (GOLD)</label>
-              <input type="number" id="reward-cost" class="pixel-input" value="100" min="1">
+              <label class="pixel-label">REWARD COST (GOLD, 0-5)</label>
+              <input type="number" id="reward-cost" class="pixel-input" value="0" min="0" max="5">
             </div>
             <div>
               <label class="pixel-label">REWARD ICON</label>
-              <select id="reward-icon" class="pixel-select pixel-input">
+              <select id="reward-icon" class="pixel-select pixel-input" onchange="toggleSpecifyIcon(this)">
                 <option value="🎁">🎁 Box</option>
                 <option value="🍕">🍕 Food</option>
                 <option value="🎮">🎮 Game</option>
                 <option value="🎬">🎬 Movie</option>
                 <option value="😴">😴 Sleep</option>
+                <option value="🍬">🍬 Treat</option>
+                <option value="🎟️">🎟️ Ticket</option>
+                <option value="🤝">🤝 Favor</option>
+                <option value="specify">✏️ Specify...</option>
               </select>
             </div>
+          </div>
+          <div id="specify-icon-fields" style="display:none; margin-top:12px;">
+            <div class="grid-2" style="gap:20px;">
+              <div>
+                <label class="pixel-label">CUSTOM EMOJI</label>
+                <input type="text" id="custom-icon-emoji" class="pixel-input" placeholder="e.g. 🏆" maxlength="4">
+              </div>
+              <div>
+                <label class="pixel-label">ICON NAME</label>
+                <input type="text" id="custom-icon-name" class="pixel-input" placeholder="e.g. Trophy">
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <label class="pixel-label">REWARD DESCRIPTION (OPTIONAL)</label>
+            <textarea id="reward-desc" class="pixel-textarea pixel-input" rows="2" placeholder="Describe the reward..."></textarea>
           </div>
           <p style="font-family:'VT323'; font-size:12px; color:var(--text-dim); margin-top:8px;">
             * The reward will have the same title as the quest.

@@ -647,6 +647,28 @@ export const db = {
         }
     },
 
+    async retrieveSync() {
+        const userId = localStorage.getItem('ql_user_id');
+        if (!userId) return { status: 'error', message: 'Not logged in' };
+
+        try {
+            const cloudData = await cloudSync.downloadData(userId);
+            if (!cloudData) {
+                return { status: 'error', message: 'No cloud data found for this account.' };
+            }
+
+            // Restore data to local storage
+            if (cloudData.player) this.save(DB_KEYS.PLAYER, cloudData.player);
+            if (cloudData.quests) this.save(DB_KEYS.QUESTS, cloudData.quests);
+            if (cloudData.achievements) this.save(DB_KEYS.ACHIEVEMENTS, cloudData.achievements);
+            if (cloudData.rewards) this.save(DB_KEYS.REWARDS, cloudData.rewards);
+
+            return { status: 'success', message: '✓ Data retrieved from cloud! Reloading...' };
+        } catch (e) {
+            return { status: 'error', message: 'Retrieve failed: ' + e.message };
+        }
+    },
+
     async deleteAccount() {
         try {
             // 1. Delete from Cloud

@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
   $title = "QUEST LOG � REWARDS";
   include '../includes/header.php';
 ?>
@@ -41,14 +41,13 @@
 </nav>
 
 <div class="page-container" style="padding-top: 80px;">
-  <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;">
-    <div>
-      <h1 class="pixel-title">🎁 REWARDS</h1>
-      <p class="pixel-subtitle">Complete quests to unlock rewards</p>
-    </div>
-    <button class="btn-pixel btn-pixel-gold" onclick="$('#add-reward-modal').fadeIn()">➕ HISTORY</button>
+  <div class="page-header" style="margin-bottom: 24px;">
+    <h1 class="pixel-title">🎁 REWARDS</h1>
+    <p class="pixel-subtitle">Complete quests to unlock rewards</p>
   </div>
-
+  <button class="btn-pixel btn-pixel-purple" onclick="openRewardHistory()" style="width: 100%; margin-bottom: 32px; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 14px;">
+    📜 VIEW REWARD HISTORY
+  </button>
   <div id="system-message" class="pixel-panel" style="display:none;margin-bottom:20px;">
     <span id="system-message-text" style="font-size:10px;"></span>
   </div>
@@ -60,7 +59,6 @@
     </div>
   </div>
 </div>
-
 <!-- REWARD HISTORY MODAL -->
 <div id="reward-history-modal" class="pixel-modal" style="display:none;">
   <div class="pixel-panel" style="max-width:500px;margin:8% auto;position:relative;border-width:4px;">
@@ -69,17 +67,6 @@
     <div id="reward-history-content">
       <div style="text-align:center;padding:40px;color:var(--text-dim);font-family:'VT323';font-size:20px;">Loading...</div>
     </div>
-  </div>
-</div>
-      <div style="margin-bottom:20px;">
-        <label class="pixel-label">DESCRIPTION (OPTIONAL)</label>
-        <textarea id="reward-desc" class="pixel-textarea pixel-input" rows="2" placeholder="Describe the reward..."></textarea>
-      </div>
-      <div style="display:flex;gap:12px;">
-        <button type="submit" class="btn-pixel btn-pixel-gold">✨ CREATE</button>
-        <button type="button" class="btn-pixel btn-pixel-outline" onclick="$('#add-reward-modal').fadeOut()">CANCEL</button>
-      </div>
-    </form>
   </div>
 </div>
 

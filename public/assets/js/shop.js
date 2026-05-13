@@ -75,7 +75,7 @@ function renderWeaponShop(playerGold, player) {
             'uncommon': {name:'Sage of Light', file:'Paladin_Sage_of_Light.png'},
             'rare': {name:'Emblem', file:'Paladin_Emblem.png'},
             'epic': {name:'Holy Shield', file:'Paladin_Holy_Shield.png'},
-            'legendary': {name:'Demon Slayer', file:'Paladin_Inheritance_of_the_Dark_King - Demon_Slayer.png'},
+            'legendary': {name:'Inheritance of the Dark King: Demon Slayer', file:'Paladin_Inheritance_of_the_Dark_King - Demon_Slayer.png'},
             'mythic': {name:'Celestial', file:'Paladin_Celestial.png'}
         },
         'Mage': {
