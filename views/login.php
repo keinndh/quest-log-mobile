@@ -74,10 +74,36 @@
     .login-logo { font-size: 48px; }
     .login-title { font-size: 20px; }
   }
+
+  .inbox-bell {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(13,0,33,0.8);
+    border: 2px solid var(--gold-dark);
+    color: var(--gold);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 100;
+    transition: all 0.1s steps(1);
+  }
+  .inbox-bell:hover {
+    border-color: var(--gold);
+    transform: scale(1.1);
+  }
 </style>
 </head>
 <body>
 <div class="scanlines"></div>
+
+<div class="inbox-bell" onclick="alert('📢 SYSTEM UPDATES:\n- Cloud Sync is now active!\n- Offline usage improved.\n- Server status: UP.')" title="System Inbox">
+  🔔
+</div>
 
 <div class="login-card">
   <div class="login-logo">âš”ï¸</div>

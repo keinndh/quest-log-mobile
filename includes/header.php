@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/pixel.css">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
 <link rel="manifest" href="manifest.json">
 <script>
     window.csrfToken = '<?php echo $_SESSION['csrf_token'] ?? ''; ?>';
